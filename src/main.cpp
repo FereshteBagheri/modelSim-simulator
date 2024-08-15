@@ -1,14 +1,24 @@
-// src/main.cpp
+#include "gate.h"
+#include "module.h"
 #include <iostream>
-#include "Gate.h"
+#include <vector>
+
+using namespace std;
 
 int main() {
-    AndGate andGate;
-    bool input1 = true;
-    int input2 = 1;
+    vector<bool> gateInputs1 = {true, false};
+    Gate andGate("and", 1, gateInputs1, false);
     
-    bool result = andGate.compute(input1, input2);
-    std::cout << "AND Gate Result: " << result << std::endl;
+    vector<bool> gateInputs2 = {true, true};
+    Gate orGate("or", 2, gateInputs2, false);
+
+    vector<bool> moduleInputs = {true, false};
+    Module myModule(3, moduleInputs, false);
+    myModule.addComponent(&andGate);
+    myModule.addComponent(&orGate);
+
+    myModule.evaluate();
+    cout << "Module output: " << myModule.getOutput() << endl;
 
     return 0;
 }

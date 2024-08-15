@@ -21,7 +21,7 @@ void testWireCreationWithUniqueID() {
 void testDuplicateWireID() {
     try {
         Wire wire1("W3");
-        Wire wireDuplicate("W3"); // Should throw an exception
+        Wire wireDuplicate("W3"); 
         cout << "testDuplicateWireID failed: Exception not thrown" << endl;
     } catch (const runtime_error& e) {
         cout << "testDuplicateWireID passed: " << e.what() << endl;

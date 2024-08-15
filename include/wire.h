@@ -26,4 +26,4 @@ public:
     static bool addWire(Wire* wire);
 };
 
-#endif // WIRE_H
+#endif 

@@ -15,4 +15,4 @@ public:
     bool evaluate() override;
 };
 
-#endif // GATE_H
+#endif 

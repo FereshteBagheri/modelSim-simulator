@@ -1,0 +1,45 @@
+# Ignore object files and other build artifacts
+*.o
+*.obj
+*.lo
+*.a
+*.lib
+*.la
+*.lai
+*.so
+*.so.*
+*.dylib
+*.dll
+*.exe
+*.out
+
+# Ignore dependency files
+*.d
+*.dep
+
+# Ignore other generated files
+*.pid
+*.log
+*.tmp
+*.bak
+
+# Ignore build directories
+/build/
+/bin/
+/lib/
+/lib64/
+/obj/
+/objs/
+/output/
+/Debug/
+/Release/
+
+# Ignore any core dumps
+core
+*.core
+
+# Ignore editor backup files
+*~
+
+# Ignore the test executable
+test_wire

@@ -4,48 +4,71 @@
 
 using namespace std;
 
-void testInitialization() {
-    Wire wire("W1");
-    assert(wire.getOutput() == nullopt);
-    cout << "testInitialization passed" << endl;
+void testWireCreationWithUniqueID() {
+    try {
+        Wire wire1("W1");
+        Wire wire2("W2");
+        
+        assert(Wire::getWireById("W1") == &wire1);
+        assert(Wire::getWireById("W2") == &wire2);
+
+        cout << "testWireCreationWithUniqueID passed" << endl;
+    } catch (const runtime_error& e) {
+        cout << "testWireCreationWithUniqueID failed: " << e.what() << endl;
+    }
 }
 
-void testSetValue() {
-    Wire wire("W2");
-    wire.setValue(true);
-    assert(wire.getOutput() == true);
-    wire.setValue(false);
-    assert(wire.getOutput() == false);
-    cout << "testSetValue passed" << endl;
+void testDuplicateWireID() {
+    try {
+        Wire wire1("W3");
+        Wire wireDuplicate("W3"); // Should throw an exception
+        cout << "testDuplicateWireID failed: Exception not thrown" << endl;
+    } catch (const runtime_error& e) {
+        cout << "testDuplicateWireID passed: " << e.what() << endl;
+    }
 }
 
-void testConnectAndCalculateOutput() {
-    Wire wire1("W3");
-    Wire wire2("W4");
+void testWireConnection() {
+    Wire wire1("W4");
+    Wire wire2("W5");
     
     wire1.setValue(true);
     wire2.connectInput(&wire1);
     
-    assert(wire2.calculateOutput() == true); // wire2 should take the value from wire1
-    cout << "testConnectAndCalculateOutput passed" << endl;
+    assert(wire2.calculateOutput() == true);
+    cout << "testWireConnection passed" << endl;
 }
 
-void testConnectionWithNullValue() {
-    Wire wire1("W5");
-    Wire wire2("W6");
+void testWireSetValue() {
+    Wire wire1("W6");
+    wire1.setValue(true);
+    assert(wire1.getOutput() == true);
+    
+    wire1.setValue(false);
+    assert(wire1.getOutput() == false);
+    
+    cout << "testWireSetValue passed" << endl;
+}
+
+void testWireConnectionWithNullValue() {
+    Wire wire1("W7");
+    Wire wire2("W8");
     
     wire2.connectInput(&wire1);
-    assert(wire2.calculateOutput() == nullopt); // wire2 should be nullopt since wire1 has no value set
+    assert(wire2.calculateOutput() == nullopt);
+    
     wire1.setValue(false);
-    assert(wire2.calculateOutput() == false); // wire2 should reflect the updated value of wire1
-    cout << "testConnectionWithNullValue passed" << endl;
+    assert(wire2.calculateOutput() == false);
+    
+    cout << "testWireConnectionWithNullValue passed" << endl;
 }
 
 void runTests() {
-    testInitialization();
-    testSetValue();
-    testConnectAndCalculateOutput();
-    testConnectionWithNullValue();
+    testWireCreationWithUniqueID();
+    testDuplicateWireID();
+    testWireConnection();
+    testWireSetValue();
+    testWireConnectionWithNullValue();
 }
 
 int main() {

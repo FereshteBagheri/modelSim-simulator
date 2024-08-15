@@ -3,6 +3,8 @@
 
 using namespace std;
 
+unordered_map<string, Wire*> Wire::wireMap;
+
 Wire::Wire(const string& id) : wireId(id), inputWirePtr(nullptr), value(nullopt) {
     if (!addWire(this)) {
         cout <<"duplicate ID";

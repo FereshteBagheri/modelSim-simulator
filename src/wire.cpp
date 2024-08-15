@@ -1,8 +1,13 @@
 #include "wire.h"
+#include <iostream>
 
 using namespace std;
 
-Wire::Wire(string id) : wireId(id), inputWirePtr(nullptr), value(nullopt) {}
+Wire::Wire(const string& id) : wireId(id), inputWirePtr(nullptr), value(nullopt) {
+    if (!addWire(this)) {
+        cout <<"duplicate ID";
+    }
+}
 
 void Wire::connectInput(Wire* input) {
     inputWirePtr = input;
@@ -19,6 +24,16 @@ optional<bool> Wire::calculateOutput() {
     return value;
 }
 
-optional<bool> Wire::getOutput(){
+optional<bool> Wire::getOutput() {
     return calculateOutput();
+}
+
+Wire* Wire::getWireById(const string& id) {
+    auto it = wireMap.find(id);
+    return (it != wireMap.end()) ? it->second : nullptr;
+}
+
+bool Wire::addWire(Wire* wire) {
+    auto result = wireMap.emplace(wire->wireId, wire);
+    return result.second;
 }

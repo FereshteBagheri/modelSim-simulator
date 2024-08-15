@@ -1,10 +1,23 @@
-#include "component.h"
+#include "Component.h"
 
-using namespace std;
+Component::Component(const string& id) : id(id) {}
 
-Component::Component(int id, const vector<bool>& inputs, bool output)
-    : componentId(id), inputs(inputs), output(output) {}
+Component::~Component() = default;
 
-bool Component::getOutput() const {
+void Component::addConnectedComponent(Component* comp) {
+    connectedComponents.push_back(comp);
+}
+
+void Component::notifyConnectedComponents() {
+    for (Component* comp : connectedComponents) {
+        comp->evaluate();
+    }
+}
+
+optional<bool> Component::getOutput() const {
     return output;
+}
+
+const string& Component::getId() const {
+    return id;
 }

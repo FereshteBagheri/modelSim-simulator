@@ -1,41 +1,25 @@
-#include "wire.h"
-#include <iostream>
+#include "Wire.h"
 
-using namespace std;
 
-unordered_map<string, Wire*> Wire::wireMap;
+Wire::Wire(const string& id)
+    : Component(id), inputComponent(nullptr) {}
 
-Wire::Wire(const string& id) : wireId(id), inputWirePtr(nullptr), value(nullopt) {
-    if (!addWire(this)) {
-        cout <<"duplicate ID";
+Wire::Wire(const string& id, Component* input)
+    : Component(id), inputComponent(input) {}
+
+void Wire::connectInput(Component* input) {
+    inputComponent = input;
+    input->addConnectedComponent(this);
+}
+
+void Wire::setValue(optional<bool> value) {
+    this->output = value;
+    notifyConnectedComponents();
+}
+
+void Wire::evaluate() {
+    if (inputComponent) {
+        output = inputComponent->getOutput();
+        notifyConnectedComponents();
     }
-}
-
-void Wire::connectInput(Wire* input) {
-    inputWirePtr = input;
-}
-
-void Wire::setValue(bool newValue) {
-    value = newValue;
-}
-
-optional<bool> Wire::calculateOutput() {
-    if (inputWirePtr) {
-        return inputWirePtr->calculateOutput();
-    }
-    return value;
-}
-
-optional<bool> Wire::getOutput() {
-    return calculateOutput();
-}
-
-Wire* Wire::getWireById(const string& id) {
-    auto it = wireMap.find(id);
-    return (it != wireMap.end()) ? it->second : nullptr;
-}
-
-bool Wire::addWire(Wire* wire) {
-    auto result = wireMap.emplace(wire->wireId, wire);
-    return result.second;
 }

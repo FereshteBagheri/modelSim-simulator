@@ -1,18 +1,20 @@
 #ifndef GATE_H
 #define GATE_H
 
-#include "component.h"
-#include <string>
+#include "Component.h"
+#include <vector>
 
 using namespace std;
 
 class Gate : public Component {
-private:
-    string gateType;
+protected:
+    vector<Component*> inputComponents;
 
 public:
-    Gate(const string& type, int id, const vector<bool>& inputs, bool output);
-    bool evaluate() override;
+    Gate(const string& id, const vector<Component*>& inputs);
+    void connectInput(Component* input);
+    void connectInputs(const vector<Component*>& inputs);
+    virtual void evaluate() override = 0;
 };
 
 #endif 

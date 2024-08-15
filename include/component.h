@@ -2,19 +2,27 @@
 #define COMPONENT_H
 
 #include <vector>
+#include <optional>
+#include <string>
 
 using namespace std;
 
 class Component {
 protected:
-    int componentId;
-    vector<bool> inputs;
-    bool output;
+    string id;
+    optional<bool> output;
+    vector<Component*> connectedComponents;
 
 public:
-    Component(int id, const vector<bool>& inputs, bool output);
-    virtual bool evaluate() = 0;
-    bool getOutput() const;
+    Component(const string& id);
+
+    virtual void evaluate() = 0;
+
+    void addConnectedComponent(Component* comp);
+    void notifyConnectedComponents();
+
+    optional<bool> getOutput() const;
+    const string& getId() const;
 };
 
 #endif 

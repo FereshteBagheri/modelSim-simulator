@@ -1,29 +1,25 @@
 #ifndef WIRE_H
 #define WIRE_H
 
-#include <string>
+#include "Component.h"
 #include <optional>
-#include <unordered_map>
 
 using namespace std;
 
-class Wire {
+class Wire : public Component {
 private:
-    string wireId;
-    Wire* inputWirePtr;
-    optional<bool> value;
-
-    static unordered_map<string, Wire*> wireMap;
+    Component* inputComponent;
 
 public:
     Wire(const string& id);
-    void connectInput(Wire* input);
-    void setValue(bool value);
-    optional<bool> calculateOutput();
-    optional<bool> getOutput();
 
-    static Wire* getWireById(const string& id);
-    static bool addWire(Wire* wire);
+    Wire(const string& id, Component* input);
+
+    void connectInput(Component* input);
+
+    void setValue(optional<bool> value);
+
+    void evaluate() override;
 };
 
 #endif 

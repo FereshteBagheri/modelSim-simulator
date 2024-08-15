@@ -1,15 +1,18 @@
-// include/Gate.h
 #ifndef GATE_H
 #define GATE_H
 
-class Gate {
-public:
-    virtual bool compute(bool input1, bool input2) = 0;  // Pure virtual function
-};
+#include "component.h"
+#include <string>
 
-class AndGate : public Gate {
+using namespace std;
+
+class Gate : public Component {
+private:
+    string gateType;
+
 public:
-    bool compute(bool input1, bool input2) override;
+    Gate(const string& type, int id, const vector<bool>& inputs, bool output);
+    bool evaluate() override;
 };
 
 #endif // GATE_H

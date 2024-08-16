@@ -130,6 +130,8 @@ void handleAddGate(istringstream& iss, Circuit& circuit) {
         gate = new NandGate(gateId, inputWires);
     } else if (gateType == "nor") {
         gate = new NorGate(gateId, inputWires);
+    } else if(gateType == "not") {
+        gate = new NotGate(gateId, inputWires[0]);
     } else {
         cerr << "gate/module not found" << endl;
         return;

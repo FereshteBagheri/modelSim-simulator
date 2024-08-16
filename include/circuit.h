@@ -11,6 +11,7 @@
 #include "XorGate.h"
 #include "NorGate.h"
 #include "NandGate.h"
+#include "NotGate.h"
 
 class Circuit {
 private:

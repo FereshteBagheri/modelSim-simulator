@@ -11,91 +11,99 @@ void handleConnect(istringstream& iss, Circuit& circuit);
 void handlePut(istringstream& iss, Circuit& circuit);
 void handlePrint(istringstream& iss, Circuit& circuit){}
 
-void handleConnect(std::istringstream& iss, Circuit& circuit) {
-    std::string inputWireId, outputWireId;
+void printWires(Circuit& circuit){
+    cout << "Current wire values:" << endl;
+    for (const auto& [id, component] : circuit.getComponents()) {
+            Wire* wire = dynamic_cast<Wire*>(component);
+            if (wire) {
+                auto wireValue = wire->getOutput();
+                if (wireValue.has_value()) {
+                    cout << "Wire " << id << ": " << wireValue.value() << endl;
+                } else {
+                    cout << "Wire " << id << ": (undefined)" << endl;
+                }
+            }
+        }
+}
+
+void handleConnect(istringstream& iss, Circuit& circuit) {
+
+    string inputWireId, outputWireId;
     iss >> inputWireId >> outputWireId;
 
     Component* inputWire = circuit.getComponentById(inputWireId);
-    if (!inputWire) {
-        inputWire = new Wire(inputWireId, nullptr);
-        circuit.addComponent(inputWireId, inputWire);
+    Component* outputWire = circuit.getComponentById(outputWireId);
+
+    //I assumed we print a single error if both id's are not valid
+    if (!inputWire || !outputWire) {
+        cerr <<"ID not found" << endl;
+        return;
     }
 
-    Component* outputWire = circuit.getComponentById(outputWireId);
-    if (!outputWire) {
-        outputWire = new Wire(outputWireId, inputWire);
-        circuit.addComponent(outputWireId, outputWire);
+    if (inputWireId == outputWireId){
+        cerr << "invalid connection" <<endl;
+        return;
     }
 
     inputWire->addConnectedComponent(outputWire);
+    outputWire->evaluate();
 
-    std::cout << "Connected " << inputWireId << " to " << outputWireId << std::endl;
-}
+    cout << "Connected " << inputWireId << " to " << outputWireId << endl;
+
+    printWires(circuit);
+    } 
 
 
-void handlePut(std::istringstream& iss, Circuit& circuit) {
-    std::string wireId;
+void handlePut(istringstream& iss, Circuit& circuit) {
+    string wireId;
     bool value;
     iss >> wireId >> value;
 
     Wire* wire = dynamic_cast<Wire*>(circuit.getComponentById(wireId));
     
-    if (wire) {
-        wire->setValue(value);
+    if (!wire) {
+        cerr << "ID not found" << endl;
+        return;
         
-
-        // Print the values of all wires
-        std::cout << "Current wire values:" << std::endl;
-        for (const auto& [id, component] : circuit.getComponents()) {
-            Wire* wire = dynamic_cast<Wire*>(component);
-            if (wire) {
-                auto wireValue = wire->getOutput();
-                if (wireValue.has_value()) {
-                    std::cout << "Wire " << id << ": " << wireValue.value() << std::endl;
-                } else {
-                    std::cout << "Wire " << id << ": (undefined)" << std::endl;
-                }
-            }
-        }
+    } else if(value !=1 && value !=0) {
+        cerr<<"value not valid"<<endl;
+        return;        
     } else {
-        std::cerr << "Wire " << wireId << " not found" << std::endl;
+        wire->setValue(value);
+        printWires(circuit);
     }
 }
 
-void handleAddGate(std::istringstream& iss, Circuit& circuit) {
-    std::string gateType, gateId, outputId;
-    std::vector<std::string> inputIds;
+void handleAddGate(istringstream& iss, Circuit& circuit) {
+    string gateType, gateId, outputId;
+    vector<string> inputIds;
 
     iss >> gateType >> gateId;
 
-    // Check if the gate/module ID already exists in the circuit
     if (circuit.getComponentById(gateId)) {
-        std::cerr << "ID duplicate" << std::endl;
+        cerr << "ID duplicate" << endl;
         return;
     }
 
-    std::string inputId;
+    string inputId;
     while (iss >> inputId) {
         inputIds.push_back(inputId);
     }
 
-    // The last ID is considered the output wire ID
     outputId = inputIds.back();
     inputIds.pop_back();
 
-    // Check the number of inputs for the gate
     if (gateType == "not") {
         if (inputIds.size() != 1) {
-            std::cerr << "inputs incompatible" << std::endl;
+            cerr << "inputs incompatible" << endl;
             return;
         }
     } else if (inputIds.size() < 2) {
-        std::cerr << "inputs incompatible" << std::endl;
+        cerr << "inputs incompatible" << endl;
         return;
     }
 
-    // Prepare the input wires vector
-    std::vector<Wire*> inputWires;
+    vector<Wire*> inputWires;
     for (const auto& id : inputIds) {
         Wire* inputWire = dynamic_cast<Wire*>(circuit.getComponentById(id));
         if (!inputWire) {
@@ -105,7 +113,6 @@ void handleAddGate(std::istringstream& iss, Circuit& circuit) {
         inputWires.push_back(inputWire);
     }
 
-    // Create the gate based on the type
     Gate* gate = nullptr;
 
     if (gateType == "and") {
@@ -113,14 +120,12 @@ void handleAddGate(std::istringstream& iss, Circuit& circuit) {
     } else if (gateType == "or") {
         gate = new OrGate(gateId, inputWires);
     } else {
-        std::cerr << "gate/module not found" << std::endl;
+        cerr << "gate/module not found" << endl;
         return;
     }
 
-    // Add the gate to the circuit
     circuit.addComponent(gateId, gate);
 
-    // Create the output wire if it doesn't exist and connect it to the gate
     Wire* outputWire = dynamic_cast<Wire*>(circuit.getComponentById(outputId));
     if (!outputWire) {
         outputWire = new Wire(outputId);
@@ -128,11 +133,11 @@ void handleAddGate(std::istringstream& iss, Circuit& circuit) {
     }
 
     gate->setOutput(outputWire);
-    std::cout << "Added " << gateType << " gate with ID " << gateId << std::endl;
+    gate->evaluate();
+    cout << "Added " << gateType << " gate with ID " << gateId << endl;
+
+    printWires(circuit);
 }
-
-
-
 
 void processCommand(const string& command, Circuit& circuit) {
     istringstream iss(command);

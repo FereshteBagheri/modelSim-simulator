@@ -1,28 +1,28 @@
 #include "AndGate.h"
 
-AndGate::AndGate(const string& id, const vector<Component*>& inputs)
+AndGate::AndGate(const string& id, const vector<Wire*>& inputs)
     : Gate(id, inputs) {}
 
 void AndGate::evaluate() {
-    bool hasZ = false;
-    bool result = true;
+    bool hasZ = false;   // To check if any input is undefined
+    bool result = true;  // To store the result of the AND operation
 
-    for (Component* input : inputComponents) {
+    for (Wire* input : inputWires) {
         auto inputVal = input->getOutput();
 
-         if (!inputVal.has_value()) {
-            hasZ = true;
-        } else if(!inputVal.value()){
-            result = false;
-            break;
+        if (!inputVal.has_value()) {
+            hasZ = true;  // Mark as undefined if any input is undefined
+        } else if (!inputVal.value()) {
+            result = false;  // If any input is false, the result is false
+            break;  // No need to continue checking
         }
     }
 
     if (result && hasZ) {
-        this->output = nullopt;
+        this->outputWire->setValue(nullopt);  // Set output to undefined if all inputs are true but one is undefined
     } else {
-        this->output = result;
+        this->outputWire->setValue(result);  // Set output to the result of the AND operation
     }
 
-    this->notifyConnectedComponents();
+    this->outputWire->evaluate();  // Propagate the result through the circuit
 }

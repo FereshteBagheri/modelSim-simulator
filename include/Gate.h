@@ -2,19 +2,26 @@
 #define GATE_H
 
 #include "Component.h"
+#include "Wire.h"
 #include <vector>
 
 using namespace std;
 
 class Gate : public Component {
 protected:
-    vector<Component*> inputComponents;
+    vector<Wire*> inputWires;
+    Wire* outputWire;
 
 public:
-    Gate(const string& id, const vector<Component*>& inputs);
-    void connectInput(Component* input);
-    void connectInputs(const vector<Component*>& inputs);
+    Gate(const string& id, const vector<Wire*>& inputs);
+    
+    void connectInput(Wire* input);
+    void connectInputs(const vector<Wire*>& inputs);
+    
+    void setOutput(Wire* output);
+    Wire* getOutput() const;
+
     virtual void evaluate() override = 0;
 };
 
-#endif 
+#endif // GATE_H

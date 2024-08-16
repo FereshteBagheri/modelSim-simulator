@@ -15,14 +15,12 @@ void handleConnect(std::istringstream& iss, Circuit& circuit) {
     std::string inputWireId, outputWireId;
     iss >> inputWireId >> outputWireId;
 
-    // Check if the input wire already exists in the circuit
     Component* inputWire = circuit.getComponentById(inputWireId);
     if (!inputWire) {
         inputWire = new Wire(inputWireId, nullptr);
         circuit.addComponent(inputWireId, inputWire);
     }
 
-    // Check if the output wire already exists in the circuit
     Component* outputWire = circuit.getComponentById(outputWireId);
     if (!outputWire) {
         outputWire = new Wire(outputWireId, inputWire);
@@ -64,41 +62,77 @@ void handlePut(std::istringstream& iss, Circuit& circuit) {
     }
 }
 
-void handleAddGate(istringstream& iss, Circuit& circuit) {
-    string gateType, gateId, outputId;
-    vector<string> inputIds;
+void handleAddGate(std::istringstream& iss, Circuit& circuit) {
+    std::string gateType, gateId, outputId;
+    std::vector<std::string> inputIds;
 
     iss >> gateType >> gateId;
-    string inputId;
+
+    // Check if the gate/module ID already exists in the circuit
+    if (circuit.getComponentById(gateId)) {
+        std::cerr << "ID duplicate" << std::endl;
+        return;
+    }
+
+    std::string inputId;
     while (iss >> inputId) {
         inputIds.push_back(inputId);
     }
 
+    // The last ID is considered the output wire ID
     outputId = inputIds.back();
     inputIds.pop_back();
 
-    Gate* gate = nullptr;
-    vector<Component*> inputs;
-
-    for (const auto& id : inputIds) {
-        inputs.push_back(circuit.getComponentById(id));
+    // Check the number of inputs for the gate
+    if (gateType == "not") {
+        if (inputIds.size() != 1) {
+            std::cerr << "inputs incompatible" << std::endl;
+            return;
+        }
+    } else if (inputIds.size() < 2) {
+        std::cerr << "inputs incompatible" << std::endl;
+        return;
     }
+
+    // Prepare the input wires vector
+    std::vector<Wire*> inputWires;
+    for (const auto& id : inputIds) {
+        Wire* inputWire = dynamic_cast<Wire*>(circuit.getComponentById(id));
+        if (!inputWire) {
+            inputWire = new Wire(id);
+            circuit.addComponent(id, inputWire);
+        }
+        inputWires.push_back(inputWire);
+    }
+
+    // Create the gate based on the type
+    Gate* gate = nullptr;
 
     if (gateType == "and") {
-        gate = new AndGate(gateId, inputs);
+        gate = new AndGate(gateId, inputWires);
     } else if (gateType == "or") {
-        gate = new OrGate(gateId, inputs);
+        gate = new OrGate(gateId, inputWires);
+    } else {
+        std::cerr << "gate/module not found" << std::endl;
+        return;
     }
 
-    if (gate) {
-        circuit.addComponent(gateId, gate);
-        Component* outputWire = new Wire(outputId, gate);
+    // Add the gate to the circuit
+    circuit.addComponent(gateId, gate);
+
+    // Create the output wire if it doesn't exist and connect it to the gate
+    Wire* outputWire = dynamic_cast<Wire*>(circuit.getComponentById(outputId));
+    if (!outputWire) {
+        outputWire = new Wire(outputId);
         circuit.addComponent(outputId, outputWire);
-        cout << "Added " << gateType << " gate with ID " << gateId << endl;
-    } else {
-        cerr << "Invalid gate type: " << gateType << endl;
     }
+
+    gate->setOutput(outputWire);
+    std::cout << "Added " << gateType << " gate with ID " << gateId << std::endl;
 }
+
+
+
 
 void processCommand(const string& command, Circuit& circuit) {
     istringstream iss(command);

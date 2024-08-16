@@ -1,4 +1,5 @@
 #include "Wire.h"
+#include <iostream>
 
 
 Wire::Wire(const string& id)
@@ -9,12 +10,16 @@ Wire::Wire(const string& id, Component* input)
 
 void Wire::connectInput(Component* input) {
     inputComponent = input;
-    input->addConnectedComponent(this);
 }
 
 void Wire::setValue(optional<bool> value) {
-    this->output = value;
+    if(inputComponent){
+        cout << "can not put value on output."<<endl;
+    }else{
+    output = value;
     notifyConnectedComponents();
+    }
+    
 }
 
 void Wire::evaluate() {

@@ -1,14 +1,14 @@
 #include "Component.h"
+#include <iostream>
 
 Component::Component(const string& id) : id(id) {}
-
-Component::~Component() = default;
 
 void Component::addConnectedComponent(Component* comp) {
     connectedComponents.push_back(comp);
 }
 
 void Component::notifyConnectedComponents() {
+    
     for (Component* comp : connectedComponents) {
         comp->evaluate();
     }

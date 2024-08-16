@@ -11,9 +11,10 @@ class Component {
 protected:
     string id;
     optional<bool> output;
-    vector<Component*> connectedComponents;
+    
 
 public:
+vector<Component*> connectedComponents;
     Component(const string& id);
 
     virtual void evaluate() = 0;

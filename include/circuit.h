@@ -11,12 +11,12 @@
 
 class Circuit {
 private:
-    std::unordered_map<std::string, Component*> components;
+    unordered_map<string, Component*> components;
 
 public:
-    Component* getComponentById(const std::string& id) const;
-    void addComponent(const std::string& id, Component* component);
-    const std::unordered_map<std::string, Component*>& getComponents() const;
+    Component* getComponentById(const string& id) const;
+    void addComponent(const string& id, Component* component);
+    const unordered_map<string, Component*>& getComponents() const;
 };
 
 #endif // CIRCUIT_H

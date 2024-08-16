@@ -1,6 +1,6 @@
 #include "Circuit.h"
 
-Component* Circuit::getComponentById(const std::string& id) const {
+Component* Circuit::getComponentById(const string& id) const {
     auto it = components.find(id);
     if (it != components.end()) {
         return it->second;
@@ -8,10 +8,10 @@ Component* Circuit::getComponentById(const std::string& id) const {
     return nullptr;
 }
 
-void Circuit::addComponent(const std::string& id, Component* component) {
+void Circuit::addComponent(const string& id, Component* component) {
     components[id] = component;
 }
 
-const std::unordered_map<std::string, Component*>& Circuit::getComponents() const {
+const unordered_map<string, Component*>& Circuit::getComponents() const {
     return components;
 }

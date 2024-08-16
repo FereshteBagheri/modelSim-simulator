@@ -19,10 +19,10 @@ void OrGate::evaluate() {
     }
 
     if (!result && hasZ) {
-        this->outputWire->setValue(nullopt);  // Set output to undefined if no input is true and one is undefined
+        this->outputWire->setValue(nullopt);  
     } else {
-        this->outputWire->setValue(result);  // Set output to true if any input is true, else false
+        this->outputWire->setValue(result);  
     }
 
-    this->outputWire->evaluate();  // Propagate the result through the circuit
+    this->outputWire->evaluate();  
 }

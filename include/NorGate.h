@@ -9,4 +9,4 @@ public:
     void evaluate() override;
 };
 
-#endif // NOR_GATE_H
+#endif 

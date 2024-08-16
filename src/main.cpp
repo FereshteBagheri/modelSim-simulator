@@ -34,7 +34,7 @@ void handleConnect(istringstream& iss, Circuit& circuit) {
     Component* inputWire = circuit.getComponentById(inputWireId);
     Component* outputWire = circuit.getComponentById(outputWireId);
 
-    //I assumed we print a single error if both id's are not valid
+    
     if (!inputWire || !outputWire) {
         cerr <<"ID not found" << endl;
         return;
@@ -80,7 +80,7 @@ void handleAddGate(istringstream& iss, Circuit& circuit) {
 
     iss >> gateType >> gateId;
 
-    // Check if the gate/module ID already exists in the circuit
+    
     if (circuit.getComponentById(gateId)) {
         cerr << "ID duplicate" << endl;
         return;
@@ -91,11 +91,11 @@ void handleAddGate(istringstream& iss, Circuit& circuit) {
         inputIds.push_back(inputId);
     }
 
-    // The last ID is considered the output wire ID
+    
     outputId = inputIds.back();
     inputIds.pop_back();
 
-    // Check the number of inputs for the gate
+    
     if (gateType == "not") {
         if (inputIds.size() != 1) {
             cerr << "inputs incompatible" << endl;
@@ -106,7 +106,7 @@ void handleAddGate(istringstream& iss, Circuit& circuit) {
         return;
     }
 
-    // Prepare the input wires vector
+    
     vector<Wire*> inputWires;
     for (const auto& id : inputIds) {
         Wire* inputWire = dynamic_cast<Wire*>(circuit.getComponentById(id));
@@ -117,7 +117,7 @@ void handleAddGate(istringstream& iss, Circuit& circuit) {
         inputWires.push_back(inputWire);
     }
 
-    // Create the gate based on the type
+    
     Gate* gate = nullptr;
 
     if (gateType == "and") {
@@ -135,10 +135,10 @@ void handleAddGate(istringstream& iss, Circuit& circuit) {
         return;
     }
 
-    // Add the gate to the circuit
+    
     circuit.addComponent(gateId, gate);
 
-    // Create the output wire and set the output component
+    
     Wire* outputWire = dynamic_cast<Wire*>(circuit.getComponentById(outputId));
     if (!outputWire) {
         outputWire = new Wire(outputId);
@@ -150,7 +150,7 @@ void handleAddGate(istringstream& iss, Circuit& circuit) {
 
     cout << "Added " << gateType << " gate with ID " << gateId << endl;
 
-    // Optional: Print all wire values after adding the gate
+    
     printWires(circuit);
 }
 

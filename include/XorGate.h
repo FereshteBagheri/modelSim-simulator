@@ -9,4 +9,4 @@ public:
     void evaluate() override;
 };
 
-#endif // XOR_GATE_H
+#endif 

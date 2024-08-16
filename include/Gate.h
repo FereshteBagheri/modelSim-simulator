@@ -24,4 +24,4 @@ public:
     virtual void evaluate() override = 0;
 };
 
-#endif // GATE_H
+#endif 

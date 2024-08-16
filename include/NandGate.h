@@ -9,4 +9,4 @@ public:
     void evaluate() override;
 };
 
-#endif // NAND_GATE_H
+#endif 

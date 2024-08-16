@@ -10,4 +10,4 @@ public:
     void evaluate() override;
 };
 
-#endif // OR_GATE_H
+#endif 

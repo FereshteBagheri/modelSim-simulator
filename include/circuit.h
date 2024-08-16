@@ -22,4 +22,4 @@ public:
     const unordered_map<string, Component*>& getComponents() const;
 };
 
-#endif // CIRCUIT_H
+#endif 

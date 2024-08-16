@@ -8,6 +8,9 @@
 #include "Gate.h"
 #include "AndGate.h"
 #include "OrGate.h"
+#include "XorGate.h"
+#include "NorGate.h"
+#include "NandGate.h"
 
 class Circuit {
 private:

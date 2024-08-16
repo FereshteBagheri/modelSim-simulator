@@ -15,12 +15,22 @@
 
 class Circuit {
 private:
-    unordered_map<string, Component*> components;
+    
+    std::unordered_map<std::string, Wire*> wires;
+    std::unordered_map<std::string, Component*> components;
 
 public:
-    Component* getComponentById(const string& id) const;
-    void addComponent(const string& id, Component* component);
-    const unordered_map<string, Component*>& getComponents() const;
+    
+    Wire* getWireById(const std::string& id) const;
+    Component* getComponentById(const std::string& id) const;
+
+    
+    void addWire(const std::string& id, Wire* wire);
+    void addComponent(const std::string& id, Component* component);
+
+    
+    const std::unordered_map<std::string, Wire*>& getWires() const;
+    const std::unordered_map<std::string, Component*>& getComponents() const;
 };
 
 #endif 

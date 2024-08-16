@@ -13,7 +13,7 @@ void handlePrint(istringstream& iss, Circuit& circuit){}
 
 void printWires(Circuit& circuit){
     cout << "Current wire values:" << endl;
-    for (const auto& [id, component] : circuit.getComponents()) {
+    for (const auto& [id, component] : circuit.getWires()) {
             Wire* wire = dynamic_cast<Wire*>(component);
             if (wire) {
                 auto wireValue = wire->getOutput();
@@ -31,8 +31,8 @@ void handleConnect(istringstream& iss, Circuit& circuit) {
     string inputWireId, outputWireId;
     iss >> inputWireId >> outputWireId;
 
-    Component* inputWire = circuit.getComponentById(inputWireId);
-    Component* outputWire = circuit.getComponentById(outputWireId);
+    Component* inputWire = circuit.getWireById(inputWireId);
+    Component* outputWire = circuit.getWireById(outputWireId);
 
     
     if (!inputWire || !outputWire) {
@@ -56,16 +56,17 @@ void handleConnect(istringstream& iss, Circuit& circuit) {
 
 void handlePut(istringstream& iss, Circuit& circuit) {
     string wireId;
-    bool value;
+    int value;
     iss >> wireId >> value;
+    
 
-    Wire* wire = dynamic_cast<Wire*>(circuit.getComponentById(wireId));
+    Wire* wire = dynamic_cast<Wire*>(circuit.getWireById(wireId));
     
     if (!wire) {
         cerr << "ID not found" << endl;
         return;
         
-    } else if(value !=1 && value !=0) {
+    } else if(!(value ==1 || value ==0)) {
         cerr<<"value not valid"<<endl;
         return;        
     } else {
@@ -109,10 +110,10 @@ void handleAddGate(istringstream& iss, Circuit& circuit) {
     
     vector<Wire*> inputWires;
     for (const auto& id : inputIds) {
-        Wire* inputWire = dynamic_cast<Wire*>(circuit.getComponentById(id));
+        Wire* inputWire = dynamic_cast<Wire*>(circuit.getWireById(id));
         if (!inputWire) {
             inputWire = new Wire(id);
-            circuit.addComponent(id, inputWire);
+            circuit.addWire(id, inputWire);
         }
         inputWires.push_back(inputWire);
     }
@@ -141,10 +142,10 @@ void handleAddGate(istringstream& iss, Circuit& circuit) {
     circuit.addComponent(gateId, gate);
 
     
-    Wire* outputWire = dynamic_cast<Wire*>(circuit.getComponentById(outputId));
+    Wire* outputWire = dynamic_cast<Wire*>(circuit.getWireById(outputId));
     if (!outputWire) {
         outputWire = new Wire(outputId);
-        circuit.addComponent(outputId, outputWire);
+        circuit.addWire(outputId, outputWire);
     }
 
     gate->setOutput(outputWire);

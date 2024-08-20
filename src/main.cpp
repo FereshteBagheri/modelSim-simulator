@@ -27,7 +27,7 @@ void handleAddNewModule(istringstream& iss) {
     Scope::addModuleName(moduleName, moduleDef);
 }
 
-void handleAddGate(istringstream& iss, Scope& scope) {
+void handleAddComponent(istringstream& iss, Scope& scope) {
     string componentType, componentId, outputId;
     vector<string> passedIds;
     
@@ -92,19 +92,19 @@ void handleAddGate(istringstream& iss, Scope& scope) {
 
 }
 
-void printWires(Circuit& circuit){
+void printWires(const Scope& scope) {
+    using namespace std;
+    
     cout << "Current wire values:" << endl;
-    for (const auto& [id, component] : circuit.getWires()) {
-            Wire* wire = dynamic_cast<Wire*>(component);
-            if (wire) {
-                auto wireValue = wire->evaluate();
-                if (wireValue.has_value()) {
-                    cout << "Wire " << id << ": " << wireValue.value() << endl;
-                } else {
-                    cout << "Wire " << id << ": (undefined)" << endl;
-                }
-            }
+
+    for (const auto& [id, wire] : scope.getWires()) {
+        auto wireValue = wire->evaluate();
+        if (wireValue.has_value()) {
+            cout << "Wire " << id << ": " << wireValue.value() << endl;
+        } else {
+            cout << "Wire " << id << ": (undefined)" << endl;
         }
+    }
 }
 
 // void handleNewModule(istringstream& iss, Circuit& circuit) {
@@ -338,7 +338,7 @@ void processCommand(const string& command, Circuit& circuit) {
     } else if (cmdType == "instantiate_module") {
         // handleInstantiateModule(iss, circuit);
     } else if (cmdType == "add") {
-        handleAddGate(iss, globalScope);
+        handleAddComponent(iss, globalScope);
     } else if (cmdType == "connect") {
         handleConnect(iss, circuit);
     } else if (cmdType == "put") {

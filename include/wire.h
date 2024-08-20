@@ -8,14 +8,14 @@ using namespace std;
 
 class Wire : public Component {
 private:
-    Wire* inputWire;
+    Component* inputComponent;
 
     optional<bool> value;
 
 public:
     Wire(const string& id);
 
-    void setInputWire(Wire* input);
+    void setInputComponent(Component* input);
 
     void setValue(optional<bool> value);
 

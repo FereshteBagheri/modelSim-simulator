@@ -1,10 +1,10 @@
 #include "Wire.h"
 
 Wire::Wire(const string& id)
-    : Component(id), inputWire(nullptr), value(nullopt) {}
+    : Component(id), inputComponent(nullptr), value(nullopt) {}
 
-void Wire::setInputWire(Wire* input) {
-    inputWire = input;
+void Wire::setInputComponent(Component* input) {
+    inputComponent = input;
 }
 
 void Wire::setValue(optional<bool> newValue) {
@@ -12,8 +12,8 @@ void Wire::setValue(optional<bool> newValue) {
 }
 
 optional<bool> Wire::evaluate() {
-    if (inputWire) {
-        return inputWire->evaluate();  
+    if (inputComponent) {
+        return inputComponent->evaluate();  
     }
     return value;  
 }

@@ -26,8 +26,7 @@ public:
 
     static void addModuleName(const string& name, const ModuleDefinition* definition);
     static const ModuleDefinition* getModuleDefinition(const string& name);
-    static bool validateModuleDefinition(const string& name, const ModuleDefinition* definition);
-
+  
     bool isBasicGate(const string& type) const;
 
 

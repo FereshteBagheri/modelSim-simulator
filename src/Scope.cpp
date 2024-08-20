@@ -1,4 +1,5 @@
 #include "Scope.h"
+#include "ErrorMessages.h"
 
 #include <iostream>
 #include <algorithm>
@@ -25,7 +26,7 @@ map<string, Wire*> Scope::getWires() const {
 
 void Scope::addComponent(const string& id, Component* component) {
     if (components.find(id) != components.end()) {
-        cerr << "duplicate ID" <<endl;
+        cerr << ErrorMessages::DUPLICATE_ID <<endl;
         return;
     }
     components[id] = component;
@@ -38,7 +39,6 @@ Component* Scope::getComponent(const string& id) const {
 
 void Scope::addModuleName(const string& name, const ModuleDefinition* definition) {
     if (moduleDefinitions.find(name) != moduleDefinitions.end()) {
-        cerr << "this module already exists"<< endl;
         return;
     }
     moduleDefinitions[name] = definition;
@@ -51,15 +51,6 @@ const ModuleDefinition* Scope::getModuleDefinition(const string& name) {
         return it->second;
     }
     return nullptr;
-}
-
-bool Scope::validateModuleDefinition(const string& name, const ModuleDefinition* definition){
-    
-    if (getModuleDefinition(name) != nullptr) {
-        cerr << "This module already exists: " << name << endl;
-        return false;
-    }
-    return true;
 }
 
 bool Scope::isBasicGate(const string& type) const {

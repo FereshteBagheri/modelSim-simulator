@@ -1,4 +1,5 @@
 #include "CommandHandler.h"
+#include "ErrorMessages.h"
 
 #include <iostream>
 #include <sstream>
@@ -23,7 +24,7 @@ void CommandHandler::processCommand(const string& command) {
     } else if (cmdType == "print") {
         handlePrint(iss);
     } else {
-        cerr << "Invalid command: " << cmdType << endl;
+        cerr << ErrorMessages::INVALID_COMMAND << cmdType << endl;
     }
 }
 
@@ -33,7 +34,7 @@ void CommandHandler::handleAddNewModule(istringstream& iss) {
     iss >> moduleName >> numInputs;
 
     if (scope.getModuleDefinition(moduleName)) {
-        cerr << "Module already exists" << endl;
+        cerr << ErrorMessages::MODULE_EXISTS << endl;
         return;
     }
 
@@ -50,7 +51,7 @@ void CommandHandler::handleAddNewModule(istringstream& iss) {
     }
 
     if (moduleDefStream.str().empty()) {
-        cerr << "Module definition is empty or missing 'end_module'" << endl;
+        cerr << ErrorMessages::MODULE_EMPTY << endl;
         return;
     }
 
@@ -70,12 +71,12 @@ void CommandHandler::handleAddComponent(istringstream& iss) {
     bool isModule = Scope::getModuleDefinition(componentType) ? true : false;
 
     if( !isBasicGate && !isModule){
-        cerr << "gate/module not found" << endl;
+        cerr << ErrorMessages::GATE_MODULE_NOT_FOUND << endl;
         return;
     }
 
     if (scope.getComponent(componentId) != nullptr) {
-        cerr << "Duplicate ID" << endl;
+        cerr << ErrorMessages::DUPLICATE_ID << endl;
         return;
     }
 
@@ -126,7 +127,7 @@ Wire* CommandHandler::createOrRetrieveWire(const string& id) {
 
 Component* CommandHandler::createBasicGate(const string& type, const string& id, const vector<Wire*>& inputWires, Wire* outputWire) {
     if ((type == "not" && inputWires.size() != 1) || (type != "not" && inputWires.size() < 2)) {
-        cerr << "Inputs incompatible" << endl;
+        cerr << ErrorMessages::INPUTS_INCOMPATIBLE << endl;
         return nullptr;
     }
     if (type == "and") {
@@ -157,7 +158,7 @@ void CommandHandler::handlePrint(istringstream& iss) {
     Component* component = scope.getComponent(id);
 
     if (!component) {
-        cerr << "Invalid ID" << endl;
+        cerr << ErrorMessages::INVALID_ID << endl;
         return;
     }
     auto outputValue = component->evaluate();
@@ -177,12 +178,12 @@ void CommandHandler::handleConnect(istringstream& iss) {
     Wire* outputWire = scope.getWire(outputWireId);
 
     if (!inputWire || !outputWire) {
-        cerr << "ID not found" << endl;
+        cerr << ErrorMessages::ID_NOT_FOUND << endl;
         return;
     }
 
     if (inputWireId == outputWireId) {
-        cerr << "Invalid connection" << endl;
+        cerr << ErrorMessages::INVALID_CONNECTION << endl;
         return;
     }
 
@@ -197,12 +198,12 @@ void CommandHandler::handlePut(istringstream& iss) {
     Wire* wire = scope.getWire(wireId);
 
     if (!wire) {
-        cerr << "ID not found" << endl;
+        cerr << ErrorMessages::ID_NOT_FOUND << endl;
         return;
     }
 
     if (value != 0 && value != 1) {
-        cerr << "Value not valid" << endl;
+        cerr << ErrorMessages::VALUE_NOT_VALID << endl;
         return;
     }
 

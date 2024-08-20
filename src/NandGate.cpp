@@ -1,14 +1,14 @@
 #include "NandGate.h"
 
-NandGate::NandGate(const string& id, const vector<Wire*>& inputs)
-    : Gate(id, inputs) {}
+NandGate::NandGate(const string& id, const vector<Wire*>& inputs, Wire* output)
+    : Gate(id, inputs, output) {}
 
-void NandGate::evaluate() {
+optional<bool> NandGate::evaluate() {
     bool hasZ = false;
     bool result = true;
 
     for (Wire* input : inputWires) {
-        auto inputVal = input->getOutput();
+        optional<bool> inputVal = input->evaluate();
 
         if (!inputVal.has_value()) {
             hasZ = true;
@@ -19,10 +19,13 @@ void NandGate::evaluate() {
     }
 
     if (result && hasZ) {
-        this->outputWire->setValue(nullopt);
+        return nullopt;
     } else {
-        this->outputWire->setValue(!result);
+        return !result;
     }
-
-    this->outputWire->evaluate();
 }
+
+
+
+
+

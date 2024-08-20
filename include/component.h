@@ -11,19 +11,17 @@ class Component {
 protected:
     string id;
     optional<bool> output;
-    
 
 public:
-vector<Component*> connectedComponents;
     Component(const string& id);
+    Component(const string& id, optional<bool> output);
 
     virtual void evaluate() = 0;
-
-    void addConnectedComponent(Component* comp);
-    void notifyConnectedComponents();
+    virtual void addInput(Component* input) = 0;
 
     optional<bool> getOutput() const;
     const string& getId() const;
+    
 };
 
-#endif 
+#endif

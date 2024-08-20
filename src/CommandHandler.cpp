@@ -196,7 +196,6 @@ void CommandHandler::handleConnect(istringstream& iss) {
     outputWire->setInputComponent(inputWire);
     cout << "Connected " << inputWireId << " to " << outputWireId << endl;
 
-    printWires();
 }
 
 void CommandHandler::handlePut(istringstream& iss) {
@@ -217,16 +216,4 @@ void CommandHandler::handlePut(istringstream& iss) {
     }
 
     wire->setValue(value);
-}
-
-void CommandHandler::printWires() const {
-    cout << "Current wire values:" << endl;
-    for (const auto& [id, wire] : scope.getWires()) {
-        auto wireValue = wire->evaluate();
-        if (wireValue.has_value()) {
-            cout << "Wire " << id << ": " << wireValue.value() << endl;
-        } else {
-            cout << "Wire " << id << ": (undefined)" << endl;
-        }
-    }
 }

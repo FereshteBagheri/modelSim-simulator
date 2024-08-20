@@ -20,6 +20,8 @@ public:
     void processCommand(const string& command);
 
 private:
+    Scope& scope;
+
     void handleAddNewModule(istringstream& iss);
     void handleAddComponent(istringstream& iss);
     void handlePrint(istringstream& iss);
@@ -28,12 +30,9 @@ private:
 
     vector<Wire*> createOrRetrieveWires(const vector<string>& ids);
     Wire* createOrRetrieveWire(const string& id);
+
     Component* createBasicGate(const string& type, const string& id, const vector<Wire*>& inputWires, Wire* outputWire);
     Component* createModule(const string& moduleName, const string& instanceId, const vector<Wire*>& inputWires, Wire* outputWire);
-
-    void printWires() const;
-
-    Scope& scope;
 };
 
-#endif 
+#endif

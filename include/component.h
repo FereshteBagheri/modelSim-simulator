@@ -16,9 +16,7 @@ public:
 
     virtual optional<bool> evaluate() = 0;
     
-
     const string& getId() const;
-
 };
 
 #endif

@@ -16,6 +16,7 @@ public:
     void addWire(const string& id, Wire* wire);
 
     Wire* getWire(const string& id) const;
+    map<string, Wire*> getWires() const;
 
     void addComponent(const string& id, Component* component);
 

@@ -20,6 +20,12 @@ Wire* Scope::getWire(const string& id) const {
     return (it != wires.end()) ? it->second : nullptr;
 }
 
+map<string, Wire*> Scope::getWires() const {
+    return wires;
+}
+
+
+
 
 void Scope::addComponent(const string& id, Component* component) {
     if (components.find(id) != components.end()) {

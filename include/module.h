@@ -11,7 +11,7 @@
 
 class Module : public Component {
 public:
-    Module(const string& id, const ModuleDefinition& def, const vector<Wire*>& inputWires, Wire* outputWire, Scope& parentScope);
+    Module(const string& id, const ModuleDefinition& def, const vector<Wire*>& inputWires, Wire* outputWire);
 
     optional<bool> evaluate() override;
     Wire* getOutputWire() const;

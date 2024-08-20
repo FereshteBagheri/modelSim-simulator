@@ -147,7 +147,7 @@ Component* CommandHandler::createBasicGate(const string& type, const string& id,
 
 Component* CommandHandler::createModule(const string& moduleName, const string& instanceId, const vector<Wire*>& inputWires, Wire* outputWire) {
     const ModuleDefinition* moduleDef = Scope::getModuleDefinition(moduleName);
-    return new Module(instanceId, *moduleDef, inputWires, outputWire, scope);
+    return new Module(instanceId, *moduleDef, inputWires, outputWire);
 }
 
 void CommandHandler::handlePrint(istringstream& iss) {

@@ -2,10 +2,10 @@
 
 #include <iostream>
 
-Module::Module(const string& id, const ModuleDefinition& def, const vector<Wire*>& inputWires, Wire* outputWire, Scope& parentScope)
-    : Component(id), scope(), output(outputWire) {
+Module::Module(const string& id, const ModuleDefinition& def, const vector<Wire*>& inputWires, Wire* outputWire)
+    : Component(id), output(outputWire),  scope() {
 
-    if (inputWires.size() != def.getNumInputs()) {
+    if (inputWires.size() != static_cast<std::vector<Wire*>::size_type>(def.getNumInputs())) {
         cerr << "incompatible inputs" << endl;
         return;
     }

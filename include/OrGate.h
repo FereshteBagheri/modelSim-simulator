@@ -5,9 +5,9 @@
 
 class OrGate : public Gate {
 public:
-    OrGate(const string& id, const vector<Wire*>& inputs);
+    OrGate(const string& id, const vector<Wire*>& inputs, Wire* output);
 
     optional<bool> evaluate() override;
 };
 
-#endif 
+#endif

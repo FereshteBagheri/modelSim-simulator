@@ -1,14 +1,14 @@
 #include "OrGate.h"
 
-OrGate::OrGate(const string& id, const vector<Wire*>& inputs)
-    : Gate(id, inputs) {}
+OrGate::OrGate(const string& id, const vector<Wire*>& inputs, Wire* output)
+    : Gate(id, inputs, output) {}
 
-void OrGate::evaluate() {
+optional<bool> OrGate::evaluate() {
     bool hasZ = false;
     bool result = false;
 
     for (Wire* input : inputWires) {
-        auto inputVal = input->getOutput();
+        optional<bool> inputVal = input->evaluate();
 
         if (!inputVal.has_value()) {
             hasZ = true;
@@ -19,10 +19,8 @@ void OrGate::evaluate() {
     }
 
     if (!result && hasZ) {
-        this->outputWire->setValue(nullopt);  
+        return nullopt;  
     } else {
-        this->outputWire->setValue(result);  
+        return result;
     }
-
-    this->outputWire->evaluate();  
 }

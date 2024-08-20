@@ -11,6 +11,21 @@ using namespace std;
 
 Scope globalScope;
 
+void printWires(const Scope& scope) {
+    using namespace std;
+    
+    cout << "Current wire values:" << endl;
+
+    for (const auto& [id, wire] : scope.getWires()) {
+        auto wireValue = wire->evaluate();
+        if (wireValue.has_value()) {
+            cout << "Wire " << id << ": " << wireValue.value() << endl;
+        } else {
+            cout << "Wire " << id << ": (undefined)" << endl;
+        }
+    }
+}
+
 void handleAddNewModule(istringstream& iss) {
 
     string moduleName;
@@ -92,20 +107,6 @@ void handleAddComponent(istringstream& iss, Scope& scope) {
 
 }
 
-void printWires(const Scope& scope) {
-    using namespace std;
-    
-    cout << "Current wire values:" << endl;
-
-    for (const auto& [id, wire] : scope.getWires()) {
-        auto wireValue = wire->evaluate();
-        if (wireValue.has_value()) {
-            cout << "Wire " << id << ": " << wireValue.value() << endl;
-        } else {
-            cout << "Wire " << id << ": (undefined)" << endl;
-        }
-    }
-}
 
 // void handleNewModule(istringstream& iss, Circuit& circuit) {
 //     string moduleId;
@@ -181,32 +182,29 @@ void handlePrint(istringstream& iss, Scope& scope) {
 }
 
 
-
-
-void handleConnect(istringstream& iss, Circuit& circuit) {
-
+void handleConnect(istringstream& iss, Scope& scope) {
     string inputWireId, outputWireId;
     iss >> inputWireId >> outputWireId;
 
-    Wire* inputWire = circuit.getWireById(inputWireId);
-    Wire* outputWire = circuit.getWireById(outputWireId);
+    Wire* inputWire = scope.getWire(inputWireId);
+    Wire* outputWire = scope.getWire(outputWireId);
 
-    
     if (!inputWire || !outputWire) {
-        cerr <<"ID not found" << endl;
+        std::cerr << "ID not found" << std::endl;
         return;
     }
 
-    if (inputWireId == outputWireId){
-        cerr << "invalid connection" <<endl;
+    if (inputWireId == outputWireId) {
+        std::cerr << "Invalid connection" << std::endl;
         return;
     }
 
     outputWire->setInputComponent(inputWire);
 
-    cout << "Connected " << inputWireId << " to " << outputWireId << endl;
-    printWires(circuit);
-    } 
+    std::cout << "Connected " << inputWireId << " to " << outputWireId << std::endl;
+    printWires(scope);
+}
+
 
 void handlePut(istringstream& iss, Scope& scope) {
     string wireId;
@@ -340,7 +338,7 @@ void processCommand(const string& command, Circuit& circuit) {
     } else if (cmdType == "add") {
         handleAddComponent(iss, globalScope);
     } else if (cmdType == "connect") {
-        handleConnect(iss, circuit);
+        handleConnect(iss, globalScope);
     } else if (cmdType == "put") {
         handlePut(iss, globalScope);
     } else if (cmdType == "print") {

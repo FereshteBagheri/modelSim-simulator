@@ -6,7 +6,7 @@
 class NorGate : public Gate {
 public:
     NorGate(const string& id, const vector<Wire*>& inputs);
-    void evaluate() override;
+    optional<bool> evaluate() override;
 };
 
 #endif 

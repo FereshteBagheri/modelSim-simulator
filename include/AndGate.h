@@ -5,11 +5,9 @@
 
 class AndGate : public Gate {
 public:
-    
-    AndGate(const string& id, const vector<Wire*>& inputs);
+    AndGate(const string& id, const vector<Wire*>& inputs, Wire* output);
 
-    
-    void evaluate() override;
+    optional<bool> evaluate() override;
 };
 
-#endif 
+#endif

@@ -1,28 +1,29 @@
 #include "AndGate.h"
 
-AndGate::AndGate(const string& id, const vector<Wire*>& inputs)
-    : Gate(id, inputs) {}
+AndGate::AndGate(const string& id, const vector<Wire*>& inputs, Wire* output)
+    : Gate(id, inputs, output) {}
 
-void AndGate::evaluate() {
+optional<bool> AndGate::evaluate() {
     bool hasZ = false;   
     bool result = true;  
 
     for (Wire* input : inputWires) {
-        auto inputVal = input->getOutput();
+        optional<bool> inputVal = input->evaluate();
 
         if (!inputVal.has_value()) {
-            hasZ = true;  
+            hasZ = true;
         } else if (!inputVal.value()) {
-            result = false;  
-            break;  
+            result = false;
+            break;
         }
     }
 
+    optional<bool> finalResult;
     if (result && hasZ) {
-        this->outputWire->setValue(nullopt);  
+        return nullopt;
     } else {
-        this->outputWire->setValue(result);  
+        return result;
     }
 
-    this->outputWire->evaluate();  
+    return finalResult;
 }

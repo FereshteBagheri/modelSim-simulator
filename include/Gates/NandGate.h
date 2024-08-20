@@ -6,6 +6,7 @@
 class NandGate : public Gate {
 public:
     NandGate(const string& id, const vector<Wire*>& inputs, Wire* output);
+    
     optional<bool> evaluate() override;
 };
 

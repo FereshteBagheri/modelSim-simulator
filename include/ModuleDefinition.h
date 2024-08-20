@@ -5,7 +5,6 @@
 #include <vector>
 #include <istream>
 
-
 using namespace std;
 
 class ModuleDefinition {

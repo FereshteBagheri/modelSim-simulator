@@ -3,8 +3,13 @@
 
 #include "Scope.h"
 #include "ModuleDefinition.h"
-#include "Circuit.h"
 #include "module.h"
+#include "AndGate.h"
+#include "OrGate.h"
+#include "NandGate.h"
+#include "NorGate.h"
+#include "XorGate.h"
+#include "NotGate.h"
 #include <string>
 #include <sstream>
 

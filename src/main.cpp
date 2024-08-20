@@ -1,5 +1,4 @@
 #include "Circuit.h"
-#include "ModuleManager.h"
 #include "Scope.h"
 #include "ModuleDefinition.h"
 

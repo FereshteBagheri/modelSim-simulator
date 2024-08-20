@@ -107,61 +107,6 @@ void handleAddComponent(istringstream& iss, Scope& scope) {
 
 }
 
-
-// void handleNewModule(istringstream& iss, Circuit& circuit) {
-//     string moduleId;
-//     int numInputs;
-//     iss >> moduleId >> numInputs;
-
-//     if (moduleManager.getBlueprint(moduleId)) {
-//         cerr << "Module name already exists: " << moduleId << endl;
-//         return;
-//     }
-
-    
-//     moduleManager.handleModuleDefinition(moduleId, numInputs, circuit, cin);
-
-//     cout << "Created new module blueprint with ID: " << moduleId << endl;
-// }
-
-// void handleInstantiateModule(istringstream& iss, Circuit& circuit) {
-//     string moduleId, instanceId;
-//     vector<Wire*> inputWires;
-//     string wireId;
-
-//     iss >> moduleId >> instanceId;
-
-//     Module* blueprint = moduleManager.getBlueprint(moduleId);
-//     if (!blueprint) {
-//         cerr << "Module blueprint not found: " << moduleId << endl;
-//         return;
-//     }
-
-//     while (iss >> wireId) {
-//         Wire* wire = circuit.getWireById(wireId);
-//         if (!wire) {
-//             cerr << "Wire ID not found: " << wireId << endl;
-//             return;
-//         }
-//         inputWires.push_back(wire);
-//     }
-
-//     if (inputWires.size() != blueprint->getNumInputs() + 1) {
-//         cerr << "Number of wires provided does not match the module inputs" << endl;
-//         return;
-//     }
-
-//     Wire* outputWire = inputWires.back();
-//     inputWires.pop_back();
-
-//     Module* instance = moduleManager.instantiateModule(moduleId, instanceId, inputWires, outputWire, circuit);
-//     circuit.addComponent(instanceId, instance);
-
-//     cout << "Instantiated module with ID: " << instanceId << endl;
-//     printWires(circuit);
-// }
-
-
 void handlePrint(istringstream& iss, Scope& scope) {
     string id;
     iss >> id;
@@ -224,107 +169,8 @@ void handlePut(istringstream& iss, Scope& scope) {
     }
 
     wire->setValue(value);
-    // printWires(scope);
+    
 }
-
-// void handleAddGate(istringstream& iss, Circuit& circuit) {
-//     string gateType, gateId, outputId;
-//     vector<string> inputIds;
-
-//     iss >> gateType >> gateId;
-
-    
-//     if (circuit.getComponentById(gateId)) {
-//         cerr << "ID duplicate" << endl;
-//         return;
-//     }
-
-    
-//     string inputId;
-//     while (iss >> inputId) {
-//         inputIds.push_back(inputId);
-//     }
-
-    
-//     outputId = inputIds.back();
-//     inputIds.pop_back();
-
-    
-//     vector<Wire*> inputWires;
-//     for (const auto& id : inputIds) {
-//         Wire* inputWire = circuit.getWireById(id);
-//         if (!inputWire) {
-//             inputWire = new Wire(id);
-//             circuit.addWire(id, inputWire);
-//         }
-//         inputWires.push_back(inputWire);
-//     }
-
-//     Wire* outputWire = circuit.getWireById(outputId);
-//     if (!outputWire) {
-//         outputWire = new Wire(outputId);
-//         circuit.addWire(outputId, outputWire);
-//     }
-
-//     Gate* gate = nullptr;
-
-    
-//     if (gateType == "and") {
-//         gate = new AndGate(gateId, inputWires, outputWire);
-//     } else if (gateType == "or") {
-//         gate = new OrGate(gateId, inputWires, outputWire);
-//     } else if (gateType == "xor") {
-//         gate = new XorGate(gateId, inputWires, outputWire);
-//     } else if (gateType == "nand") {
-//         gate = new NandGate(gateId, inputWires, outputWire);
-//     } else if (gateType == "nor") {
-//         gate = new NorGate(gateId, inputWires, outputWire);
-//     } else if (gateType == "not") {
-//         if (inputIds.size() != 1) {
-//             cerr << "inputs incompatible for NOT gate" << endl;
-//             return;
-//         }
-//         gate = new NotGate(gateId, inputWires[0], outputWire);
-//     } else {
-//         cout << "check module" << endl;
-        
-//         Module* blueprint = moduleManager.getBlueprint(gateType);
-//         cout << "check blueprint" << endl;
-
-//         if (blueprint) {
-//             cout << "found blueprint" << endl;
-            
-//             if (inputWires.size() != blueprint->getNumInputs()) {
-//                 cerr << "Number of wires provided does not match the module inputs" << endl;
-//                 return;
-//             }
-//             cout << "input num corret" << endl;
-//             Module* instance = moduleManager.instantiateModule(gateType, gateId, inputWires, outputWire, circuit);
-//             cout << "finding the instance" << endl;
-//             if (instance) {
-//                 circuit.addComponent(gateId, instance);
-//                 cout << "Instantiated module with ID " << gateId << endl;
-//                 printWires(circuit);
-//                 return;
-//             } else {
-//                 cerr << "Failed to instantiate module: " << gateType << endl;
-//                 return;
-//             }
-//         } else {
-//             cerr << "Gate/module not found: " << gateType << endl;
-//             return;
-//         }
-//     }
-
-    
-//     if (gate) {
-//         circuit.addComponent(gateId, gate);
-//         cout << "Added " << gateType << " gate with ID " << gateId << endl;
-//         printWires(circuit);
-//     }
-// }
-
-
 
 void processCommand(const string& command, Circuit& circuit) {
     istringstream iss(command);
@@ -332,9 +178,9 @@ void processCommand(const string& command, Circuit& circuit) {
     iss >> cmdType;
 
     if (cmdType == "new_module") {
-        // handleNewModule(iss, circuit);
+        
     } else if (cmdType == "instantiate_module") {
-        // handleInstantiateModule(iss, circuit);
+        
     } else if (cmdType == "add") {
         handleAddComponent(iss, globalScope);
     } else if (cmdType == "connect") {

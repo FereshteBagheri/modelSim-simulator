@@ -2,7 +2,7 @@
 #include <iostream>
 
 
-map<string, const ModuleDefinition*> Scope::moduleDefinitions; // Definition
+map<string, const ModuleDefinition*> Scope::moduleDefinitions; 
 
 
 Scope::Scope() {}

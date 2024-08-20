@@ -19,8 +19,8 @@ optional<bool> NorGate::evaluate() {
     }
 
     if (result && hasZ) {
-        return nullopt; // If there's any Z and result is still true, output is Z
+        return nullopt; 
     } else {
-        return result;  // Return the result of NOR logic
+        return result;  
     }
 }

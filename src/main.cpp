@@ -38,7 +38,7 @@ void handlePrint(istringstream& iss, Circuit& circuit) {
         return;
     }
 
-    // Check if the component is a Gate
+    
     Gate* gate = dynamic_cast<Gate*>(component);
     if (gate) {
         auto outputValue = gate->evaluate();

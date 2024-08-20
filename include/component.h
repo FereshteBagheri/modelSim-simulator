@@ -15,7 +15,7 @@ public:
     Component(const string& id);
 
     virtual optional<bool> evaluate() = 0;
-    // virtual void addInput(Component* input) = 0;
+    
 
     const string& getId() const;
 

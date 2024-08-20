@@ -1,28 +1,26 @@
 #include "NorGate.h"
 
-NorGate::NorGate(const string& id, const vector<Wire*>& inputs)
-    : Gate(id, inputs) {}
+NorGate::NorGate(const string& id, const vector<Wire*>& inputs, Wire* output)
+    : Gate(id, inputs, output) {}
 
-void NorGate::evaluate() {
-    bool result = false;
+optional<bool> NorGate::evaluate() {
+    bool result = true;
     bool hasZ = false;
 
     for (Wire* input : inputWires) {
-        auto inputVal = input->getOutput();
+        optional<bool> inputVal = input->evaluate();
 
         if (!inputVal.has_value()) {
             hasZ = true;
         } else if (inputVal.value()) {
-            result = true;
+            result = false;
             break;
         }
     }
 
-    if (hasZ) {
-        this->outputWire->setValue(nullopt);
+    if (result && hasZ) {
+        return nullopt; // If there's any Z and result is still true, output is Z
     } else {
-        this->outputWire->setValue(!result);
+        return result;  // Return the result of NOR logic
     }
-
-    this->outputWire->evaluate();
 }

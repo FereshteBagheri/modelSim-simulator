@@ -1,5 +1,8 @@
 #include "Circuit.h"
 #include "ModuleManager.h"
+#include "Scope.h"
+#include "ModuleDefinition.h"
+
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -7,6 +10,87 @@
 using namespace std;
 
 ModuleManager moduleManager;
+
+void handleAddNewModule(istringstream& iss) {
+
+    string moduleName;
+    int numInputs;
+    iss >> moduleName >> numInputs;
+
+    ModuleDefinition* moduleDef = new ModuleDefinition(moduleName, numInputs, iss);
+
+    if (!moduleDef->validate()) {
+        delete moduleDef;
+        return;
+    }
+
+    Scope::addModuleName(moduleName, moduleDef);
+}
+
+void handleAddGate(istringstream& iss, Scope& scope) {
+    string componentType, componentId, outputId;
+    vector<string> passedIds;
+    
+    iss >> componentType >> componentId;
+    
+    if (scope.getComponent(componentId) != nullptr) {
+        cerr << "duplicate ID" << endl;
+        return;
+    }
+
+    string passedId;
+    while (iss >> passedId) {
+        passedIds.push_back(passedId);
+    }
+
+    if ((componentType == "not" && passedIds.size() != 2) || (componentType != "not" && passedIds.size() < 3)) {
+    cerr << "inputs incompatible" << endl;
+    return;
+    }
+    
+    outputId = passedIds.back();
+    passedIds.pop_back();
+
+    vector<Wire*> inputWires;
+    for (const auto& id : passedIds) {
+        Wire* inputWire = scope.getWire(id);
+        if (!inputWire) {
+            inputWire = new Wire(id);
+            scope.addWire(id, inputWire);
+        }
+        inputWires.push_back(inputWire);
+    }
+
+    Wire* outputWire = scope.getWire(outputId);
+    if (!outputWire) {
+        outputWire = new Wire(outputId);
+        scope.addWire(outputId, outputWire);
+    }
+
+    Component* component = nullptr;
+
+    if (componentType == "and") {
+        component = new AndGate(componentId, inputWires, outputWire);
+    } else if (componentType == "or") {
+        component = new OrGate(componentId, inputWires, outputWire);
+    } else if (componentType == "xor") {
+        component = new XorGate(componentId, inputWires, outputWire);
+    } else if (componentType == "nand") {
+        component = new NandGate(componentId, inputWires, outputWire);
+    } else if (componentType == "nor") {
+        component = new NorGate(componentId, inputWires, outputWire);
+    } else if (componentType == "not") {
+        component = new NotGate(componentId, inputWires[0], outputWire);
+    } else {
+        cerr << "Unknown gate type" << endl;
+        return;
+    }
+
+    scope.addComponent(componentId, component);
+
+    cout << "Added " << componentType << " gate with ID " << componentId << endl;
+
+}
 
 void printWires(Circuit& circuit){
     cout << "Current wire values:" << endl;
@@ -33,7 +117,7 @@ void handleNewModule(istringstream& iss, Circuit& circuit) {
         return;
     }
 
-    // Start reading the commands for the module definition from the command stream
+    
     moduleManager.handleModuleDefinition(moduleId, numInputs, circuit, cin);
 
     cout << "Created new module blueprint with ID: " << moduleId << endl;
@@ -166,23 +250,23 @@ void handleAddGate(istringstream& iss, Circuit& circuit) {
 
     iss >> gateType >> gateId;
 
-    // Check for duplicate IDs in the circuit
+    
     if (circuit.getComponentById(gateId)) {
         cerr << "ID duplicate" << endl;
         return;
     }
 
-    // Parse input IDs
+    
     string inputId;
     while (iss >> inputId) {
         inputIds.push_back(inputId);
     }
 
-    // Determine the output ID
+    
     outputId = inputIds.back();
     inputIds.pop_back();
 
-    // Basic gate handling
+    
     vector<Wire*> inputWires;
     for (const auto& id : inputIds) {
         Wire* inputWire = circuit.getWireById(id);
@@ -201,7 +285,7 @@ void handleAddGate(istringstream& iss, Circuit& circuit) {
 
     Gate* gate = nullptr;
 
-    // Handle basic gates
+    
     if (gateType == "and") {
         gate = new AndGate(gateId, inputWires, outputWire);
     } else if (gateType == "or") {
@@ -220,13 +304,13 @@ void handleAddGate(istringstream& iss, Circuit& circuit) {
         gate = new NotGate(gateId, inputWires[0], outputWire);
     } else {
         cout << "check module" << endl;
-        // Check if gateType is a module
+        
         Module* blueprint = moduleManager.getBlueprint(gateType);
         cout << "check blueprint" << endl;
 
         if (blueprint) {
             cout << "found blueprint" << endl;
-            // Instantiate the module
+            
             if (inputWires.size() != blueprint->getNumInputs()) {
                 cerr << "Number of wires provided does not match the module inputs" << endl;
                 return;
@@ -249,7 +333,7 @@ void handleAddGate(istringstream& iss, Circuit& circuit) {
         }
     }
 
-    // Add the gate to the circuit
+    
     if (gate) {
         circuit.addComponent(gateId, gate);
         cout << "Added " << gateType << " gate with ID " << gateId << endl;

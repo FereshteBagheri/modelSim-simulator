@@ -40,7 +40,7 @@ Component* Scope::getComponent(const string& id) const {
     return (it != components.end()) ? it->second : nullptr;
 }
 
-void Scope::addModuleName(const string& name, ModuleDefinition* definition) {
+void Scope::addModuleName(const string& name, const ModuleDefinition* definition) {
     if (moduleDefinitions.find(name) != moduleDefinitions.end()) {
         cerr << "this module already exists"<< endl;
         return;
@@ -48,12 +48,11 @@ void Scope::addModuleName(const string& name, ModuleDefinition* definition) {
     moduleDefinitions[name] = definition;
 }
 
-// Static method to get a module definition by name
+
 ModuleDefinition* Scope::getModuleDefinition(const string& name) {
     auto it = moduleDefinitions.find(name);
     if (it != moduleDefinitions.end()) {
         return it->second;
     }
-    cerr << "gate/module not found" << endl;
     return nullptr;
 }

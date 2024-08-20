@@ -6,6 +6,7 @@
 #include <set>
 #include "Wire.h"
 #include "Component.h"
+#include "ModuleDefinition.h"
 
 class Scope {
 public:
@@ -20,8 +21,8 @@ public:
 
     Component* getComponent(const string& id) const;
 
- // Static methods to manage global module names and definitions
-    static void addModuleName(const string& name, ModuleDefinition* definition);
+ 
+    static void addModuleName(const string& name, const ModuleDefinition* definition);
     static ModuleDefinition* getModuleDefinition(const string& name);
 
 

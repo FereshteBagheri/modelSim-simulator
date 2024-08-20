@@ -5,7 +5,8 @@
 
 class XorGate : public Gate {
 public:
-    XorGate(const string& id, const vector<Wire*>& inputs);
+    XorGate(const string& id, const vector<Wire*>& inputs, Wire* output);
+
     optional<bool> evaluate() override;
 };
 

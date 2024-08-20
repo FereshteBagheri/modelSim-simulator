@@ -8,7 +8,7 @@ optional<bool> NandGate::evaluate() {
     bool result = true;
 
     for (Wire* input : inputWires) {
-        optional<bool> inputVal = input->evaluate();
+        auto inputVal = input->evaluate();
 
         if (!inputVal.has_value()) {
             hasZ = true;
@@ -24,6 +24,7 @@ optional<bool> NandGate::evaluate() {
         return !result;
     }
 }
+
 
 
 

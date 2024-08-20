@@ -1,14 +1,14 @@
 #include "XorGate.h"
 
-XorGate::XorGate(const string& id, const vector<Wire*>& inputs)
-    : Gate(id, inputs) {}
+XorGate::XorGate(const string& id, const vector<Wire*>& inputs, Wire* output)
+    : Gate(id, inputs, output) {}
 
-void XorGate::evaluate() {
+optional<bool> XorGate::evaluate() {
     bool result = false;
     bool hasZ = false;
 
     for (Wire* input : inputWires) {
-        auto inputVal = input->getOutput();
+        auto inputVal = input->evaluate();
 
         if (!inputVal.has_value()) {
             hasZ = true;
@@ -18,10 +18,8 @@ void XorGate::evaluate() {
     }
 
     if (hasZ) {
-        this->outputWire->setValue(nullopt);
+        return nullopt;
     } else {
-        this->outputWire->setValue(result);
+        return result;
     }
-
-    this->outputWire->evaluate();
 }

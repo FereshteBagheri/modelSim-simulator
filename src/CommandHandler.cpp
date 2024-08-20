@@ -1,16 +1,19 @@
 #include "CommandHandler.h"
 #include <iostream>
+#include <sstream>
+
+using namespace std;
 
 CommandHandler::CommandHandler(Scope& scope) : scope(scope) {}
 
-void CommandHandler::processCommand(const std::string& command) {
-    std::istringstream iss(command);
-    std::string cmdType;
+void CommandHandler::processCommand(const string& command) {
+    istringstream iss(command);
+    string cmdType;
     iss >> cmdType;
 
     if (cmdType == "new_module") {
         handleAddNewModule(iss);
-    } else if (cmdType == "add") {
+    }else if (cmdType == "add") {
         handleAddComponent(iss);
     } else if (cmdType == "connect") {
         handleConnect(iss);
@@ -19,143 +22,197 @@ void CommandHandler::processCommand(const std::string& command) {
     } else if (cmdType == "print") {
         handlePrint(iss);
     } else {
-        std::cerr << "Invalid command: " << cmdType << std::endl;
+        cerr << "Invalid command: " << cmdType << endl;
     }
 }
 
-void CommandHandler::handleAddNewModule(std::istringstream& iss) {
-    std::string moduleName;
+void CommandHandler::handleAddNewModule(istringstream& iss) {
+    string moduleName;
     int numInputs;
     iss >> moduleName >> numInputs;
 
-    ModuleDefinition* moduleDef = new ModuleDefinition(moduleName, numInputs, iss);
-
-    if (!Scope::validateModuleDefinition(moduleName, moduleDef)) {
-        Scope::addModuleName(moduleName, moduleDef);
-    } else {
-        delete moduleDef;
+    if (scope.getModuleDefinition(moduleName)) {
+        cerr << "Module already exists" << endl;
+        return;
     }
+
+    
+    ostringstream moduleDefStream;
+    string line;
+
+    
+    while (getline(cin, line)) {
+        if (line == "end_module") {
+            break;
+        }
+        if (!line.empty()) {
+            moduleDefStream << line << '\n'; 
+        }
+    }
+
+    if (moduleDefStream.str().empty()) {
+        cerr << "Module definition is empty or missing 'end_module'" << endl;
+        return;
+    }
+
+    
+    istringstream moduleDefInputStream(moduleDefStream.str());
+
+    
+    ModuleDefinition* moduleDef = new ModuleDefinition(moduleName, numInputs, moduleDefInputStream);
+    scope.addModuleName(moduleName, moduleDef);
 }
 
-void CommandHandler::handleAddComponent(std::istringstream& iss) {
-    std::string componentType, componentId, outputId;
-    std::vector<std::string> passedIds;
+
+void CommandHandler::handleAddComponent(istringstream& iss) {
+    string componentType, componentId, outputId;
+    vector<string> passedIds;
 
     iss >> componentType >> componentId;
 
-    if (scope.getComponent(componentId) != nullptr) {
-        std::cerr << "Duplicate ID" << std::endl;
+    bool isBasicGate = scope.isBasicGate(componentType);
+    bool isModule = Scope::getModuleDefinition(componentType) ? true : false;
+
+    if( !isBasicGate && !isModule){
+        cerr << "gate/module not found" << endl;
         return;
     }
 
-    std::string passedId;
+    if (scope.getComponent(componentId) != nullptr) {
+        cerr << "Duplicate ID" << endl;
+        return;
+    }
+
+    string passedId;
     while (iss >> passedId) {
         passedIds.push_back(passedId);
-    }
-
-    if ((componentType == "not" && passedIds.size() != 2) || (componentType != "not" && passedIds.size() < 3)) {
-        std::cerr << "Inputs incompatible" << std::endl;
-        return;
     }
 
     outputId = passedIds.back();
     passedIds.pop_back();
 
-    std::vector<Wire*> inputWires;
-    for (const auto& id : passedIds) {
-        Wire* inputWire = scope.getWire(id);
-        if (!inputWire) {
-            inputWire = new Wire(id);
-            scope.addWire(id, inputWire);
-        }
-        inputWires.push_back(inputWire);
-    }
-
-    Wire* outputWire = scope.getWire(outputId);
-    if (!outputWire) {
-        outputWire = new Wire(outputId);
-        scope.addWire(outputId, outputWire);
-    }
+    vector<Wire*> inputWires = createOrRetrieveWires(passedIds);
+    Wire* outputWire = createOrRetrieveWire(outputId);
 
     Component* component = nullptr;
+    if (isBasicGate) {
 
-    if (componentType == "and") {
-        component = new AndGate(componentId, inputWires, outputWire);
-    } else if (componentType == "or") {
-        component = new OrGate(componentId, inputWires, outputWire);
-    } else if (componentType == "xor") {
-        component = new XorGate(componentId, inputWires, outputWire);
-    } else if (componentType == "nand") {
-        component = new NandGate(componentId, inputWires, outputWire);
-    } else if (componentType == "nor") {
-        component = new NorGate(componentId, inputWires, outputWire);
-    } else if (componentType == "not") {
-        component = new NotGate(componentId, inputWires[0], outputWire);
-    } else {
-        std::cerr << "Unknown gate type" << std::endl;
-        return;
+        component = createBasicGate(componentType, componentId, inputWires, outputWire);
+    } else{
+
+        component = createModule(componentType, componentId, inputWires, outputWire);
     }
-
+    
     scope.addComponent(componentId, component);
-    std::cout << "Added " << componentType << " gate with ID " << componentId << std::endl;
+
+    cout << "Added " << componentType << " with ID " << componentId << endl;
+
 }
 
-void CommandHandler::handlePrint(std::istringstream& iss) {
-    std::string id;
+vector<Wire*> CommandHandler::createOrRetrieveWires(const vector<string>& ids) {
+    vector<Wire*> wires;
+    for (const auto& id : ids) {
+        Wire* wire = scope.getWire(id);
+        if (!wire) {
+            wire = new Wire(id);
+            scope.addWire(id, wire);
+        }
+        wires.push_back(wire);
+    }
+    return wires;
+}
+
+Wire* CommandHandler::createOrRetrieveWire(const string& id) {
+    Wire* wire = scope.getWire(id);
+    if (!wire) {
+        wire = new Wire(id);
+        scope.addWire(id, wire);
+    }
+    return wire;
+}
+
+Component* CommandHandler::createBasicGate(const string& type, const string& id, const vector<Wire*>& inputWires, Wire* outputWire) {
+    if ((type == "not" && inputWires.size() != 1) || (type != "not" && inputWires.size() < 2)) {
+        cerr << "Inputs incompatible" << endl;
+        return nullptr;
+    }
+    if (type == "and") {
+        return new AndGate(id, inputWires, outputWire);
+    } else if (type == "or") {
+        return new OrGate(id, inputWires, outputWire);
+    } else if (type == "xor") {
+        return new XorGate(id, inputWires, outputWire);
+    } else if (type == "nand") {
+        return new NandGate(id, inputWires, outputWire);
+    } else if (type == "nor") {
+        return new NorGate(id, inputWires, outputWire);
+    } else if (type == "not") {
+        return new NotGate(id, inputWires[0], outputWire);
+    }
+    return nullptr;
+}
+
+Component* CommandHandler::createModule(const string& moduleName, const string& instanceId, const vector<Wire*>& inputWires, Wire* outputWire) {
+    const ModuleDefinition* moduleDef = Scope::getModuleDefinition(moduleName);
+    return new Module(instanceId, *moduleDef, inputWires, outputWire, scope);
+}
+
+void CommandHandler::handlePrint(istringstream& iss) {
+    string id;
     iss >> id;
 
     Component* component = scope.getComponent(id);
 
     if (!component) {
-        std::cerr << "Invalid ID" << std::endl;
+        cerr << "Invalid ID" << endl;
         return;
     }
 
     auto outputValue = component->evaluate();
     if (outputValue.has_value()) {
-        std::cout << (outputValue.value() ? "1" : "0") << std::endl;
+        cout << (outputValue.value() ? "1" : "0") << endl;
     } else {
-        std::cout << "z" << std::endl;
+        cout << "z" << endl;
     }
 }
 
-void CommandHandler::handleConnect(std::istringstream& iss) {
-    std::string inputWireId, outputWireId;
+void CommandHandler::handleConnect(istringstream& iss) {
+    string inputWireId, outputWireId;
     iss >> inputWireId >> outputWireId;
 
     Wire* inputWire = scope.getWire(inputWireId);
     Wire* outputWire = scope.getWire(outputWireId);
 
     if (!inputWire || !outputWire) {
-        std::cerr << "ID not found" << std::endl;
+        cerr << "ID not found" << endl;
         return;
     }
 
     if (inputWireId == outputWireId) {
-        std::cerr << "Invalid connection" << std::endl;
+        cerr << "Invalid connection" << endl;
         return;
     }
 
     outputWire->setInputComponent(inputWire);
-    std::cout << "Connected " << inputWireId << " to " << outputWireId << std::endl;
+    cout << "Connected " << inputWireId << " to " << outputWireId << endl;
 
     printWires();
 }
 
-void CommandHandler::handlePut(std::istringstream& iss) {
-    std::string wireId;
+void CommandHandler::handlePut(istringstream& iss) {
+    string wireId;
     int value;
     iss >> wireId >> value;
 
     Wire* wire = scope.getWire(wireId);
 
     if (!wire) {
-        std::cerr << "ID not found" << std::endl;
+        cerr << "ID not found" << endl;
         return;
     }
 
     if (value != 0 && value != 1) {
-        std::cerr << "Value not valid" << std::endl;
+        cerr << "Value not valid" << endl;
         return;
     }
 
@@ -163,13 +220,13 @@ void CommandHandler::handlePut(std::istringstream& iss) {
 }
 
 void CommandHandler::printWires() const {
-    std::cout << "Current wire values:" << std::endl;
+    cout << "Current wire values:" << endl;
     for (const auto& [id, wire] : scope.getWires()) {
         auto wireValue = wire->evaluate();
         if (wireValue.has_value()) {
-            std::cout << "Wire " << id << ": " << wireValue.value() << std::endl;
+            cout << "Wire " << id << ": " << wireValue.value() << endl;
         } else {
-            std::cout << "Wire " << id << ": (undefined)" << std::endl;
+            cout << "Wire " << id << ": (undefined)" << endl;
         }
     }
 }

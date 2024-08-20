@@ -9,9 +9,9 @@ using namespace std;
 int main() {
     Scope globalScope;
     CommandHandler handler(globalScope);
-    std::string command;
+    string command;
 
-    while (std::getline(std::cin, command)) {
+    while (getline(cin, command)) {
         if (command.empty()) continue;
         handler.processCommand(command);
     }

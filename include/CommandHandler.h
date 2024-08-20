@@ -4,6 +4,7 @@
 #include "Scope.h"
 #include "ModuleDefinition.h"
 #include "Circuit.h"
+#include "module.h"
 #include <string>
 #include <sstream>
 
@@ -11,18 +12,23 @@ class CommandHandler {
 public:
     CommandHandler(Scope& scope);
 
-    void processCommand(const std::string& command);
+    void processCommand(const string& command);
 
 private:
-    void handleAddNewModule(std::istringstream& iss);
-    void handleAddComponent(std::istringstream& iss);
-    void handlePrint(std::istringstream& iss);
-    void handleConnect(std::istringstream& iss);
-    void handlePut(std::istringstream& iss);
+    void handleAddNewModule(istringstream& iss);
+    void handleAddComponent(istringstream& iss);
+    void handlePrint(istringstream& iss);
+    void handleConnect(istringstream& iss);
+    void handlePut(istringstream& iss);
+
+    vector<Wire*> createOrRetrieveWires(const vector<string>& ids);
+    Wire* createOrRetrieveWire(const string& id);
+    Component* createBasicGate(const string& type, const string& id, const vector<Wire*>& inputWires, Wire* outputWire);
+    Component* createModule(const string& moduleName, const string& instanceId, const vector<Wire*>& inputWires, Wire* outputWire);
 
     void printWires() const;
 
     Scope& scope;
 };
 
-#endif // COMMANDHANDLER_H
+#endif 

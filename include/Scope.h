@@ -27,12 +27,15 @@ public:
     static const ModuleDefinition* getModuleDefinition(const string& name);
     static bool validateModuleDefinition(const string& name, const ModuleDefinition* definition);
 
+    bool isBasicGate(const string& type) const;
+
 
 private:
     map<string, Wire*> wires;             
     map<string, Component*> components;   
 
-    static map<string, const ModuleDefinition*> moduleDefinitions;     
+    static map<string, const ModuleDefinition*> moduleDefinitions; 
+    const vector<string> basicGateTypes = {"and", "or", "nand", "nor", "xor", "not"};
 };
 
 #endif 

@@ -1,5 +1,6 @@
 #include "Scope.h"
 #include <iostream>
+#include <algorithm>
 
 
 map<string, const ModuleDefinition*> Scope::moduleDefinitions; 
@@ -66,4 +67,8 @@ bool Scope::validateModuleDefinition(const string& name, const ModuleDefinition*
     }
     
     return true;
+}
+
+bool Scope::isBasicGate(const string& type) const {
+    return find(basicGateTypes.begin(), basicGateTypes.end(), type) != basicGateTypes.end();
 }

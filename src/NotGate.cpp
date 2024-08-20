@@ -1,16 +1,14 @@
 #include "NotGate.h"
 
-NotGate::NotGate(const string& id, Wire* input)
-    : Gate(id, {input}) {}
+NotGate::NotGate(const string& id, Wire* input, Wire* output)
+    : Gate(id, {input}, output) {}
 
-void NotGate::evaluate() {
-    auto inputVal = inputWires[0]->getOutput();  
+optional<bool> NotGate::evaluate() {
+    optional<bool> inputVal = inputWires[0]->evaluate();  
 
-    if (!inputVal.has_value()) {
-        this->outputWire->setValue(nullopt);  
-    } else {
-        this->outputWire->setValue(!inputVal.value());  
+    if (inputVal.has_value()) {
+        return !inputVal.value();  
     }
 
-    this->outputWire->evaluate();  
+    return nullopt;  
 }

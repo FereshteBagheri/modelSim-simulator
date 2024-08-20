@@ -20,7 +20,7 @@ public:
     
     Wire* getOutputWire() const;
 
-    virtual void evaluate() override = 0;
+    virtual optional<bool> evaluate() override = 0;
 };
 
 #endif 

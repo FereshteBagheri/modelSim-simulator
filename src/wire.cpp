@@ -1,30 +1,19 @@
 #include "Wire.h"
-#include <iostream>
-
 
 Wire::Wire(const string& id)
-    : Component(id), inputComponent(nullptr) {}
+    : Component(id), inputWire(nullptr), value(nullopt) {}
 
-Wire::Wire(const string& id, Component* input)
-    : Component(id), inputComponent(input) {}
-
-void Wire::connectInput(Component* input) {
-    inputComponent = input;
+void Wire::setInputWire(Wire* input) {
+    inputWire = input;
 }
 
-void Wire::setValue(optional<bool> value) {
-    if(inputComponent){
-        cout << "can not put value on output."<<endl;
-    }else{
-    output = value;
-    notifyConnectedComponents();
-    }
-    
+void Wire::setValue(optional<bool> newValue) {
+    value = newValue;
 }
 
-void Wire::evaluate() {
-    if (inputComponent) {
-        output = inputComponent->getOutput();
-        notifyConnectedComponents();
+optional<bool> Wire::evaluate() {
+    if (inputWire) {
+        return inputWire->evaluate();  
     }
+    return value;  
 }

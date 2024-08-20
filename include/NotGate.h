@@ -5,9 +5,9 @@
 
 class NotGate : public Gate {
 public:
-    NotGate(const string& id, Wire* input);
+    NotGate(const string& id, Wire* input, Wire* output);
 
-    void evaluate() override;
+    optional<bool> evaluate() override;
 };
 
 #endif 

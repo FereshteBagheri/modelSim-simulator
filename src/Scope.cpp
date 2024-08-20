@@ -1,16 +1,11 @@
 #include "Scope.h"
 #include <iostream>
 
-Scope::Scope() {}
 
-Scope::~Scope() {
-    for (auto& pair : wires) {
-        delete pair.second;
-    }
-    for (auto& pair : components) {
-        delete pair.second;
-    }
-}
+map<string, const ModuleDefinition*> Scope::moduleDefinitions; // Definition
+
+
+Scope::Scope() {}
 
 void Scope::addWire(const string& id, Wire* wire) {
     if (wires.find(id) != wires.end()) {
@@ -49,10 +44,20 @@ void Scope::addModuleName(const string& name, const ModuleDefinition* definition
 }
 
 
-ModuleDefinition* Scope::getModuleDefinition(const string& name) {
+const ModuleDefinition* Scope::getModuleDefinition(const string& name) {
     auto it = moduleDefinitions.find(name);
     if (it != moduleDefinitions.end()) {
         return it->second;
     }
     return nullptr;
+}
+
+bool Scope::validateModuleDefinition(const string& name, const ModuleDefinition* definition){
+    
+    if (getModuleDefinition(name) != nullptr) {
+        cerr << "This module already exists: " << name << endl;
+        return false;
+    }
+    
+    return true;
 }

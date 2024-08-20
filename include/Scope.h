@@ -23,14 +23,15 @@ public:
 
  
     static void addModuleName(const string& name, const ModuleDefinition* definition);
-    static ModuleDefinition* getModuleDefinition(const string& name);
+    static const ModuleDefinition* getModuleDefinition(const string& name);
+    static bool validateModuleDefinition(const string& name, const ModuleDefinition* definition);
 
 
 private:
     map<string, Wire*> wires;             
     map<string, Component*> components;   
 
-    static map<string, ModuleDefinition*> moduleDefinitions;     
+    static map<string, const ModuleDefinition*> moduleDefinitions;     
 };
 
 #endif 

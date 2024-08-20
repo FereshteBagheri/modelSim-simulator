@@ -24,13 +24,3 @@ vector<string> ModuleDefinition::getCommands() const {
     return commands;
 }
 
-bool ModuleDefinition::validate() const {
-
-    if (Scope::getModuleDefinition(name) != nullptr) {
-        cerr << "This module already exists: " << name << endl;
-        return false;
-    }
-    
-    return true;
-}
-

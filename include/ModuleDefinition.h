@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 #include <istream>
-#include "Scope.h"
+
 
 using namespace std;
 
@@ -15,8 +15,6 @@ public:
     string getName() const;
     int getNumInputs() const;
     vector<string> getCommands() const;
-
-    bool validate() const;  
 
 private:
     string name;

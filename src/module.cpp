@@ -6,7 +6,7 @@
 Module::Module(const string& id, const ModuleDefinition& def, const vector<Wire*>& inputWires, Wire* outputWire)
     : Component(id), output(outputWire),  scope() {
 
-    if (inputWires.size() != static_cast<std::vector<Wire*>::size_type>(def.getNumInputs())) {
+    if (inputWires.size() != static_cast<vector<Wire*>::size_type>(def.getNumInputs())) {
         cerr << ErrorMessages::INPUTS_INCOMPATIBLE << endl;
         return;
     }

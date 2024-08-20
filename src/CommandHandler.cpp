@@ -1,5 +1,6 @@
 #include "CommandHandler.h"
 #include "ErrorMessages.h"
+#include "TrackingStreamBuf.h"
 
 #include <iostream>
 #include <sstream>
@@ -8,14 +9,20 @@ using namespace std;
 
 CommandHandler::CommandHandler(Scope& scope) : scope(scope) {}
 
-void CommandHandler::processCommand(const string& command) {
+bool CommandHandler::processCommand(const string& command) {
+
+    streambuf* originalCerrBuffer = cerr.rdbuf();
+
+    TrackingStreamBuf trackingBuf(originalCerrBuffer);
+    cerr.rdbuf(&trackingBuf);
+    
     istringstream iss(command);
     string cmdType;
     iss >> cmdType;
 
     if (cmdType == "new_module") {
         handleAddNewModule(iss);
-    }else if (cmdType == "add") {
+    } else if (cmdType == "add") {
         handleAddComponent(iss);
     } else if (cmdType == "connect") {
         handleConnect(iss);
@@ -26,6 +33,15 @@ void CommandHandler::processCommand(const string& command) {
     } else {
         cerr << ErrorMessages::INVALID_COMMAND << cmdType << endl;
     }
+
+    bool hadErrors = trackingBuf.hasWrittenToCerr();
+    cerr.rdbuf(originalCerrBuffer);
+
+    if(hadErrors){
+        cerr <<"ijfalfdjaifjaf"<<endl;
+    }
+
+    return !hadErrors;
 }
 
 void CommandHandler::handleAddNewModule(istringstream& iss) {

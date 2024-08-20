@@ -18,7 +18,7 @@ class CommandHandler {
 public:
     CommandHandler(Scope& scope);
 
-    void processCommand(const string& command);
+    bool processCommand(const string& command);
 
 private:
     Scope& scope;

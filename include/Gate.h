@@ -13,13 +13,12 @@ protected:
     Wire* outputWire;
 
 public:
-    Gate(const string& id, const vector<Wire*>& inputs);
+    Gate(const string& id, const vector<Wire*>& inputs, Wire* output);
     
     void connectInput(Wire* input);
     void connectInputs(const vector<Wire*>& inputs);
     
-    void setOutput(Wire* output);
-    Wire* getOutput() const;
+    Wire* getOutputWire() const;
 
     virtual void evaluate() override = 0;
 };

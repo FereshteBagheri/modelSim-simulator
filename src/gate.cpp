@@ -1,28 +1,16 @@
 #include "Gate.h"
 
-Gate::Gate(const string& id, const vector<Wire*>& inputs)
-    : Component(id), inputWires(inputs), outputWire(nullptr) {
-    for (Wire* input : inputs) {
-        input->addConnectedComponent(this);
-    }
-}
+Gate::Gate(const string& id, const vector<Wire*>& inputs, Wire* output)
+    : Component(id, nullopt), inputWires(inputs), outputWire(output) {}
 
 void Gate::connectInput(Wire* input) {
     inputWires.push_back(input);
-    input->addConnectedComponent(this);
 }
 
 void Gate::connectInputs(const vector<Wire*>& inputs) {
-    for (Wire* input : inputs) {
-        connectInput(input);
-    }
+    inputWires.insert(inputWires.end(), inputs.begin(), inputs.end());
 }
 
-void Gate::setOutput(Wire* output) {
-    outputWire = output;
-    outputWire->evaluate();
-}
-
-Wire* Gate::getOutput() const {
+Wire* Gate::getOutputWire() const {
     return outputWire;
 }

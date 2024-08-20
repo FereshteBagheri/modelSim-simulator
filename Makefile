@@ -6,13 +6,12 @@ CXXFLAGS = -Wall -Iinclude
 
 # Executables
 TARGET = modelsim.out
-TEST_TARGET = test_wire
+
 
 # Directories
 SRC_DIR = src
 OBJ_DIR = obj
 INCLUDE_DIR = include
-TEST_DIR = test
 
 # Source files
 SRCS = $(wildcard $(SRC_DIR)/*.cpp)

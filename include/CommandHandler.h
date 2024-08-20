@@ -3,7 +3,7 @@
 
 #include "Scope.h"
 #include "ModuleDefinition.h"
-#include "module.h"
+#include "Module.h"
 #include "AndGate.h"
 #include "OrGate.h"
 #include "NandGate.h"

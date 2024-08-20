@@ -23,7 +23,5 @@ optional<bool> AndGate::evaluate() {
         return nullopt;
     } else {
         return result;
-    }
-
-    return finalResult;
+    }  
 }

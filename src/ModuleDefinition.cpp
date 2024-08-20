@@ -1,10 +1,12 @@
 #include "ModuleDefinition.h"
+
 #include <sstream>
 #include <iostream>
 
 ModuleDefinition::ModuleDefinition(const string& name, int numInputs, istream& commandStream)
     : name(name), numInputs(numInputs) {
     string line;
+
     while (getline(commandStream, line)) {
         if (line.empty()) continue;
         if (line == "end_module") break;
@@ -23,4 +25,3 @@ int ModuleDefinition::getNumInputs() const {
 vector<string> ModuleDefinition::getCommands() const {
     return commands;
 }
-

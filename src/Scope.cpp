@@ -1,10 +1,9 @@
 #include "Scope.h"
+
 #include <iostream>
 #include <algorithm>
 
-
 map<string, const ModuleDefinition*> Scope::moduleDefinitions; 
-
 
 Scope::Scope() {}
 
@@ -15,7 +14,6 @@ void Scope::addWire(const string& id, Wire* wire) {
     wires[id] = wire;
 }
 
-
 Wire* Scope::getWire(const string& id) const {
     auto it = wires.find(id);
     return (it != wires.end()) ? it->second : nullptr;
@@ -25,9 +23,6 @@ map<string, Wire*> Scope::getWires() const {
     return wires;
 }
 
-
-
-
 void Scope::addComponent(const string& id, Component* component) {
     if (components.find(id) != components.end()) {
         cerr << "duplicate ID" <<endl;
@@ -35,7 +30,6 @@ void Scope::addComponent(const string& id, Component* component) {
     }
     components[id] = component;
 }
-
 
 Component* Scope::getComponent(const string& id) const {
     auto it = components.find(id);
@@ -65,7 +59,6 @@ bool Scope::validateModuleDefinition(const string& name, const ModuleDefinition*
         cerr << "This module already exists: " << name << endl;
         return false;
     }
-    
     return true;
 }
 

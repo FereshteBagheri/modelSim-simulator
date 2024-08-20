@@ -24,9 +24,3 @@ optional<bool> NandGate::evaluate() {
         return !result;
     }
 }
-
-
-
-
-
-

@@ -3,6 +3,7 @@
 
 #include "Component.h"
 #include "Wire.h"
+
 #include <vector>
 
 using namespace std;

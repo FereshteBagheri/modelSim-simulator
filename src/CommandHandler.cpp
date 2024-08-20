@@ -1,4 +1,5 @@
 #include "CommandHandler.h"
+
 #include <iostream>
 #include <sstream>
 
@@ -36,11 +37,9 @@ void CommandHandler::handleAddNewModule(istringstream& iss) {
         return;
     }
 
-    
     ostringstream moduleDefStream;
     string line;
 
-    
     while (getline(cin, line)) {
         if (line == "end_module") {
             break;
@@ -55,14 +54,11 @@ void CommandHandler::handleAddNewModule(istringstream& iss) {
         return;
     }
 
-    
     istringstream moduleDefInputStream(moduleDefStream.str());
 
-    
     ModuleDefinition* moduleDef = new ModuleDefinition(moduleName, numInputs, moduleDefInputStream);
     scope.addModuleName(moduleName, moduleDef);
 }
-
 
 void CommandHandler::handleAddComponent(istringstream& iss) {
     string componentType, componentId, outputId;
@@ -96,21 +92,17 @@ void CommandHandler::handleAddComponent(istringstream& iss) {
 
     Component* component = nullptr;
     if (isBasicGate) {
-
         component = createBasicGate(componentType, componentId, inputWires, outputWire);
     } else{
-
         component = createModule(componentType, componentId, inputWires, outputWire);
     }
     
     scope.addComponent(componentId, component);
-
-    cout << "Added " << componentType << " with ID " << componentId << endl;
-
 }
 
 vector<Wire*> CommandHandler::createOrRetrieveWires(const vector<string>& ids) {
     vector<Wire*> wires;
+    
     for (const auto& id : ids) {
         Wire* wire = scope.getWire(id);
         if (!wire) {
@@ -124,6 +116,7 @@ vector<Wire*> CommandHandler::createOrRetrieveWires(const vector<string>& ids) {
 
 Wire* CommandHandler::createOrRetrieveWire(const string& id) {
     Wire* wire = scope.getWire(id);
+
     if (!wire) {
         wire = new Wire(id);
         scope.addWire(id, wire);
@@ -167,8 +160,8 @@ void CommandHandler::handlePrint(istringstream& iss) {
         cerr << "Invalid ID" << endl;
         return;
     }
-
     auto outputValue = component->evaluate();
+
     if (outputValue.has_value()) {
         cout << (outputValue.value() ? "1" : "0") << endl;
     } else {
@@ -194,8 +187,6 @@ void CommandHandler::handleConnect(istringstream& iss) {
     }
 
     outputWire->setInputComponent(inputWire);
-    cout << "Connected " << inputWireId << " to " << outputWireId << endl;
-
 }
 
 void CommandHandler::handlePut(istringstream& iss) {

@@ -10,6 +10,7 @@
 #include "NorGate.h"
 #include "XorGate.h"
 #include "NotGate.h"
+
 #include <string>
 #include <sstream>
 

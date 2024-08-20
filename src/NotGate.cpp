@@ -9,6 +9,5 @@ optional<bool> NotGate::evaluate() {
     if (inputVal.has_value()) {
         return !inputVal.value();  
     }
-
     return nullopt;  
 }

@@ -2,6 +2,7 @@
 #define WIRE_H
 
 #include "Component.h"
+
 #include <optional>
 
 using namespace std;

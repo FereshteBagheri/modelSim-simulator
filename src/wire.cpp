@@ -12,6 +12,7 @@ void Wire::setValue(optional<bool> newValue) {
 }
 
 optional<bool> Wire::evaluate() {
+    
     if (inputComponent) {
         return inputComponent->evaluate();  
     }

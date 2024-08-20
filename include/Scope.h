@@ -1,12 +1,14 @@
 #ifndef SCOPE_H
 #define SCOPE_H
 
-#include <map>
-#include <string>
-#include <set>
 #include "Wire.h"
 #include "Component.h"
 #include "ModuleDefinition.h"
+
+#include <map>
+#include <string>
+#include <set>
+
 
 class Scope {
 public:

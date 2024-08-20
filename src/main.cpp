@@ -12,6 +12,7 @@ int main() {
     string command;
 
     while (getline(cin, command)) {
+
         if (command.empty()) continue;
         handler.processCommand(command);
     }

@@ -37,7 +37,37 @@ bool CommandValidator::validateAddComponent(Scope& scope, const string& componen
 bool CommandValidator::validatePrint(Scope& scope, const string& id) {
 
     if (!scope.getComponent(id)) {
-        cerr << ErrorMessages::INVALID_ID << endl;
+        cerr << ErrorMessages::ID_NOT_FOUND << endl;
+        return false;
+    }
+    return true;
+}
+
+bool CommandValidator::validateConnect(Scope& scope, const string& inputWireId, const string& outputWireId) {
+    Wire* inputWire = scope.getWire(inputWireId);
+    Wire* outputWire = scope.getWire(outputWireId);
+
+    if (!inputWire || !outputWire) {
+        cerr << ErrorMessages::ID_NOT_FOUND << endl;
+        return false;
+    }
+
+    if (inputWireId == outputWireId) {
+        cerr << ErrorMessages::INVALID_CONNECTION << endl;
+        return false;
+    }
+    return true;
+}
+
+bool CommandValidator::validatePut(Scope& scope, const string& wireId, int value) {
+
+    if (!scope.getWire(wireId)) {
+        cerr << ErrorMessages::ID_NOT_FOUND << endl;
+        return false;
+    }
+
+    if (value != 0 && value != 1) {
+        cerr << ErrorMessages::VALUE_NOT_VALID << endl;
         return false;
     }
     return true;

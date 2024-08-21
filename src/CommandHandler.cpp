@@ -97,7 +97,7 @@ bool CommandHandler::handlePrint(istringstream& iss) {
     if(!validator.validatePrint(scope, id)) {
         return false;
     }
-    
+
     Component* component = scope.getComponent(id);
     auto outputValue = component->evaluate();
 
@@ -113,18 +113,12 @@ bool CommandHandler::handleConnect(istringstream& iss) {
     string inputWireId, outputWireId;
     iss >> inputWireId >> outputWireId;
 
+    if(!validator.validateConnect(scope, inputWireId, outputWireId)) {
+        return false;
+    }
+
     Wire* inputWire = scope.getWire(inputWireId);
     Wire* outputWire = scope.getWire(outputWireId);
-
-    if (!inputWire || !outputWire) {
-        cerr << ErrorMessages::ID_NOT_FOUND << endl;
-        return false;
-    }
-
-    if (inputWireId == outputWireId) {
-        cerr << ErrorMessages::INVALID_CONNECTION << endl;
-        return false;
-    }
 
     outputWire->setInputComponent(inputWire);
     return true;
@@ -135,18 +129,11 @@ bool CommandHandler::handlePut(istringstream& iss) {
     int value;
     iss >> wireId >> value;
 
+    if(!validator.validatePut(scope, wireId, value)) {
+        return false;
+    }
+
     Wire* wire = scope.getWire(wireId);
-
-    if (!wire) {
-        cerr << ErrorMessages::ID_NOT_FOUND << endl;
-        return false;
-    }
-
-    if (value != 0 && value != 1) {
-        cerr << ErrorMessages::VALUE_NOT_VALID << endl;
-        return false;
-    }
-
     wire->setValue(value);
     return true;
 }

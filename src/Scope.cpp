@@ -25,10 +25,6 @@ map<string, Wire*> Scope::getWires() const {
 }
 
 void Scope::addComponent(const string& id, Component* component) {
-    if (components.find(id) != components.end()) {
-        cerr << ErrorMessages::DUPLICATE_ID <<endl;
-        return;
-    }
     components[id] = component;
 }
 

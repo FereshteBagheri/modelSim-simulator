@@ -1,6 +1,5 @@
 #include "CommandHandler.h"
 #include "ErrorMessages.h"
-#include "TrackingStreamBuf.h"
 
 #include <iostream>
 #include <sstream>

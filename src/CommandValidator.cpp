@@ -18,12 +18,14 @@ bool CommandValidator::validateAddComponent(Scope& scope, const string& componen
         return false;
     }
 
-    if ((componentType == "not" && size != 2) || (componentType != "not" && size < 3)) {
+    bool isBasicGate = scope.isBasicGate(componentType);
+
+    if ( isBasicGate && ((componentType == "not" && size != 2) || (componentType != "not" && size < 3))) {
         cerr << ErrorMessages::INPUTS_INCOMPATIBLE << endl;
         return false;
     }
 
-    bool isBasicGate = scope.isBasicGate(componentType);
+
     bool isModule = Scope::getModuleDefinition(componentType) != nullptr;
 
     if (!isBasicGate && !isModule) {

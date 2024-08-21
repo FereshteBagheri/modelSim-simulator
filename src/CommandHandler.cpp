@@ -58,6 +58,7 @@ bool CommandHandler::handleAddNewModule(istringstream& iss) {
 }
 
 bool CommandHandler::handleAddComponent(istringstream& iss) {
+
     string componentType, componentId, outputId;
     vector<string> passedIds;
 
@@ -83,6 +84,9 @@ bool CommandHandler::handleAddComponent(istringstream& iss) {
         component = createBasicGate(componentType, componentId, inputWires, outputWire);
     } else{
         component = createModule(componentType, componentId, inputWires, outputWire);
+        if (!component){
+            return false;
+        }
     }
     
     scope.addComponent(componentId, component);
@@ -180,6 +184,12 @@ Component* CommandHandler::createBasicGate(const string& type, const string& id,
 }
 
 Component* CommandHandler::createModule(const string& moduleName, const string& instanceId, const vector<Wire*>& inputWires, Wire* outputWire) {
+
     const ModuleDefinition* moduleDef = Scope::getModuleDefinition(moduleName);
+
+    if (inputWires.size() != moduleDef->getNumInputs()) {
+        cerr << ErrorMessages::INPUTS_INCOMPATIBLE << endl;
+        return nullptr;
+    }
     return new Module(instanceId, *moduleDef, inputWires, outputWire);
 }

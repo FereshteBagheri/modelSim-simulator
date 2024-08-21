@@ -63,43 +63,30 @@ bool CommandHandler::handleAddComponent(istringstream& iss) {
 
     iss >> componentType >> componentId;
 
-    if (scope.getComponent(componentId) != nullptr) {
-        cerr << ErrorMessages::DUPLICATE_ID << endl;
-        return false;
-    }
-
-        string passedId;
+    string passedId;
     while (iss >> passedId) {
         passedIds.push_back(passedId);
+    }
+
+    if(!validator.validateAddComponent(scope, componentType, componentId, passedIds.size())) {
+        return false;
     }
 
     outputId = passedIds.back();
     passedIds.pop_back();
 
-    if ((componentType == "not" && passedIds.size() != 1) || (componentType != "not" && passedIds.size() < 2)) {
-        cerr << ErrorMessages::INPUTS_INCOMPATIBLE << endl;
-        return false;
-    }
-
-    bool isBasicGate = scope.isBasicGate(componentType);
-    bool isModule = Scope::getModuleDefinition(componentType) ? true : false;
-
-    if( !isBasicGate && !isModule){
-        cerr << ErrorMessages::GATE_MODULE_NOT_FOUND << endl;
-        return false;
-    }
-
     vector<Wire*> inputWires = createOrRetrieveWires(passedIds);
     Wire* outputWire = createOrRetrieveWire(outputId);
 
     Component* component = nullptr;
-    if (isBasicGate) {
+    if (scope.isBasicGate(componentType)) {
         component = createBasicGate(componentType, componentId, inputWires, outputWire);
     } else{
         component = createModule(componentType, componentId, inputWires, outputWire);
     }
     
     scope.addComponent(componentId, component);
+    return true;
 }
 
 bool CommandHandler::handlePrint(istringstream& iss) {

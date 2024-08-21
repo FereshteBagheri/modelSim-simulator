@@ -33,3 +33,12 @@ bool CommandValidator::validateAddComponent(Scope& scope, const string& componen
 
     return true;
 }
+
+bool CommandValidator::validatePrint(Scope& scope, const string& id) {
+
+    if (!scope.getComponent(id)) {
+        cerr << ErrorMessages::INVALID_ID << endl;
+        return false;
+    }
+    return true;
+}

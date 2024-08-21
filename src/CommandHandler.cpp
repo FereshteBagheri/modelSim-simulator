@@ -94,12 +94,11 @@ bool CommandHandler::handlePrint(istringstream& iss) {
     string id;
     iss >> id;
 
-    Component* component = scope.getComponent(id);
-
-    if (!component) {
-        cerr << ErrorMessages::INVALID_ID << endl;
-        return;
+    if(!validator.validatePrint(scope, id)) {
+        return false;
     }
+    
+    Component* component = scope.getComponent(id);
     auto outputValue = component->evaluate();
 
     if (outputValue.has_value()) {
@@ -107,6 +106,7 @@ bool CommandHandler::handlePrint(istringstream& iss) {
     } else {
         cout << "z" << endl;
     }
+    return true;
 }
 
 bool CommandHandler::handleConnect(istringstream& iss) {
@@ -118,15 +118,16 @@ bool CommandHandler::handleConnect(istringstream& iss) {
 
     if (!inputWire || !outputWire) {
         cerr << ErrorMessages::ID_NOT_FOUND << endl;
-        return;
+        return false;
     }
 
     if (inputWireId == outputWireId) {
         cerr << ErrorMessages::INVALID_CONNECTION << endl;
-        return;
+        return false;
     }
 
     outputWire->setInputComponent(inputWire);
+    return true;
 }
 
 bool CommandHandler::handlePut(istringstream& iss) {
@@ -138,15 +139,16 @@ bool CommandHandler::handlePut(istringstream& iss) {
 
     if (!wire) {
         cerr << ErrorMessages::ID_NOT_FOUND << endl;
-        return;
+        return false;
     }
 
     if (value != 0 && value != 1) {
         cerr << ErrorMessages::VALUE_NOT_VALID << endl;
-        return;
+        return false;
     }
 
     wire->setValue(value);
+    return true;
 }
 
 vector<Wire*> CommandHandler::createOrRetrieveWires(const vector<string>& ids) {

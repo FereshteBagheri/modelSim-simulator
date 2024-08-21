@@ -8,7 +8,7 @@
 
 class CommandValidator {
 public:
-    bool validateNewModule(Scope& scope, const string& moduleName);
+    bool validateNewModule(Scope& scope, const string& moduleName, ModuleDefinition* moduleDef);
     bool validateAddComponent(Scope& scope, const string& componentType, const string& componentId, int size);
     bool validatePrint(Scope& scope, const string& id);
     bool validateConnect(Scope& scope, const string& inputWireId, const string& outputWireId);

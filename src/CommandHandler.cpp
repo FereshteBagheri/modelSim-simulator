@@ -34,7 +34,7 @@ bool CommandHandler::handleAddNewModule(istringstream& iss) {
     int numInputs;
     iss >> moduleName >> numInputs;
 
-    if(!validator.validateNewModule(scope, moduleName)) {
+    if(!validator.validateNewModule(scope, moduleName, moduleDef)) {
         return false;
     }
     
@@ -53,6 +53,11 @@ bool CommandHandler::handleAddNewModule(istringstream& iss) {
     istringstream moduleDefInputStream(moduleDefStream.str());
 
     ModuleDefinition* moduleDef = new ModuleDefinition(moduleName, numInputs, moduleDefInputStream);
+    if(!newModuleCheck(moduleDef)){
+        delete moduleDef;
+        return false;
+    }
+
     scope.addModuleName(moduleName, moduleDef);
     return true;
 }
@@ -184,7 +189,6 @@ Component* CommandHandler::createBasicGate(const string& type, const string& id,
 }
 
 Component* CommandHandler::createModule(const string& moduleName, const string& instanceId, const vector<Wire*>& inputWires, Wire* outputWire) {
-
     const ModuleDefinition* moduleDef = Scope::getModuleDefinition(moduleName);
 
     if (inputWires.size() != moduleDef->getNumInputs()) {
@@ -192,4 +196,26 @@ Component* CommandHandler::createModule(const string& moduleName, const string& 
         return nullptr;
     }
     return new Module(instanceId, *moduleDef, inputWires, outputWire);
+}
+
+bool CommandHandler::newModuleCheck(ModuleDefinition* moduleDef) {
+    
+    Scope* scope = new Scope();
+    int num = moduleDef->getNumInputs();
+    for (int i = 0; i < num; i++) {
+        string inputName = "in" + to_string(i);
+        Wire* inputWire = new Wire(inputName);
+        scope->addWire(inputName, inputWire);
+    }
+    Wire* outputWire = new Wire("out");
+    scope->addWire("out", outputWire);
+
+    CommandHandler handler(*scope);
+    for (const auto& command : moduleDef->getCommands()) {
+        if(!handler.processCommand(command)) {
+            return false;
+        }
+    }
+
+    return true;
 }

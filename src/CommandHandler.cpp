@@ -34,7 +34,7 @@ bool CommandHandler::handleAddNewModule(istringstream& iss) {
     int numInputs;
     iss >> moduleName >> numInputs;
 
-    if(!validator.validateNewModule(scope, moduleName, moduleDef)) {
+    if(!validator.validateNewModule(scope, moduleName)) {
         return false;
     }
     

@@ -40,7 +40,6 @@ void Scope::addModuleName(const string& name, const ModuleDefinition* definition
     moduleDefinitions[name] = definition;
 }
 
-
 const ModuleDefinition* Scope::getModuleDefinition(const string& name) {
     auto it = moduleDefinitions.find(name);
     if (it != moduleDefinitions.end()) {

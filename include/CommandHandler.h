@@ -36,7 +36,7 @@ private:
 
     Component* createBasicGate(const string& type, const string& id, const vector<Wire*>& inputWires, Wire* outputWire);
     Component* createModule(const string& moduleName, const string& instanceId, const vector<Wire*>& inputWires, Wire* outputWire);
-    bool newModuleCheck(ModuleDefinition* moduleDef)
+    bool newModuleCheck(ModuleDefinition* moduleDef);
 };
 
 #endif

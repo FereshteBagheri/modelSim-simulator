@@ -63,10 +63,8 @@ bool CommandHandler::handleAddNewModule(istringstream& iss) {
 }
 
 bool CommandHandler::handleAddComponent(istringstream& iss) {
-
     string componentType, componentId, outputId;
     vector<string> passedIds;
-
     iss >> componentType >> componentId;
 
     string passedId;
@@ -93,7 +91,6 @@ bool CommandHandler::handleAddComponent(istringstream& iss) {
             return false;
         }
     }
-    
     scope.addComponent(componentId, component);
     return true;
 }
@@ -171,7 +168,6 @@ Wire* CommandHandler::createOrRetrieveWire(const string& id) {
 }
 
 Component* CommandHandler::createBasicGate(const string& type, const string& id, const vector<Wire*>& inputWires, Wire* outputWire) {
-
     if (type == "and") {
         return new AndGate(id, inputWires, outputWire);
     } else if (type == "or") {
@@ -191,7 +187,7 @@ Component* CommandHandler::createBasicGate(const string& type, const string& id,
 Component* CommandHandler::createModule(const string& moduleName, const string& instanceId, const vector<Wire*>& inputWires, Wire* outputWire) {
     const ModuleDefinition* moduleDef = Scope::getModuleDefinition(moduleName);
 
-    if (inputWires.size() != moduleDef->getNumInputs()) {
+    if (inputWires.size() != static_cast<vector<Wire*>::size_type>(moduleDef->getNumInputs())) {
         cerr << ErrorMessages::INPUTS_INCOMPATIBLE << endl;
         return nullptr;
     }
@@ -199,7 +195,6 @@ Component* CommandHandler::createModule(const string& moduleName, const string& 
 }
 
 bool CommandHandler::newModuleCheck(ModuleDefinition* moduleDef) {
-    
     Scope* scope = new Scope();
     int num = moduleDef->getNumInputs();
     for (int i = 0; i < num; i++) {
@@ -216,6 +211,5 @@ bool CommandHandler::newModuleCheck(ModuleDefinition* moduleDef) {
             return false;
         }
     }
-
     return true;
 }

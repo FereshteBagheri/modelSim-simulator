@@ -17,7 +17,6 @@ public:
     Wire(const string& id);
 
     void setInputComponent(Component* input);
-
     void setValue(optional<bool> value);
 
     optional<bool> evaluate() override;

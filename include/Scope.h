@@ -12,7 +12,6 @@
 
 class Scope {
 public:
-    
     Scope();
 
     void addWire(const string& id, Wire* wire);
@@ -28,7 +27,6 @@ public:
     static const ModuleDefinition* getModuleDefinition(const string& name);
   
     bool isBasicGate(const string& type) const;
-
 
 private:
     map<string, Wire*> wires;             

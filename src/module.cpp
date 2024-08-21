@@ -5,7 +5,7 @@
 
 Module::Module(const string& id, const ModuleDefinition& def, const vector<Wire*>& inputWires, Wire* outputWire)
     : Component(id), output(outputWire),  scope() {
-
+        
     for (int i = 0; i < def.getNumInputs(); i++) {
         string inputName = "in" + to_string(i);
         Wire* inputWire = inputWires[i];

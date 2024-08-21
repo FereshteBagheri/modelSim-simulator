@@ -16,6 +16,5 @@ int main() {
         if (command.empty()) continue;
         handler.processCommand(command);
     }
-
     return 0;
 }

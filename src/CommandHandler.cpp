@@ -49,10 +49,10 @@ bool CommandHandler::handleAddNewModule(istringstream& iss) {
             moduleDefStream << line << '\n'; 
         }
     }
-
     istringstream moduleDefInputStream(moduleDefStream.str());
-
     ModuleDefinition* moduleDef = new ModuleDefinition(moduleName, numInputs, moduleDefInputStream);
+
+    // if there is an error in the module's body, the module is not defined
     if(!newModuleCheck(moduleDef)){
         delete moduleDef;
         return false;

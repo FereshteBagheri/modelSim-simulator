@@ -10,6 +10,7 @@
 #include "NorGate.h"
 #include "XorGate.h"
 #include "NotGate.h"
+#include "CommandValidator.h"
 
 #include <string>
 #include <sstream>
@@ -18,16 +19,17 @@ class CommandHandler {
 public:
     CommandHandler(Scope& scope);
 
-    void processCommand(const string& command);
+    bool processCommand(const string& command);
 
 private:
     Scope& scope;
+    CommandValidator validator;
 
-    void handleAddNewModule(istringstream& iss);
-    void handleAddComponent(istringstream& iss);
-    void handlePrint(istringstream& iss);
-    void handleConnect(istringstream& iss);
-    void handlePut(istringstream& iss);
+    bool handleAddNewModule(istringstream& iss);
+    bool handleAddComponent(istringstream& iss);
+    bool handlePrint(istringstream& iss);
+    bool handleConnect(istringstream& iss);
+    bool handlePut(istringstream& iss);
 
     vector<Wire*> createOrRetrieveWires(const vector<string>& ids);
     Wire* createOrRetrieveWire(const string& id);

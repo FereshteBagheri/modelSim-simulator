@@ -188,7 +188,7 @@ Component* CommandHandler::createModule(const string& moduleName, const string& 
     const ModuleDefinition* moduleDef = Scope::getModuleDefinition(moduleName);
 
     if (inputWires.size() != static_cast<vector<Wire*>::size_type>(moduleDef->getNumInputs())) {
-        cerr << ErrorMessages::INPUTS_INCOMPATIBLE << endl;
+        cerr << ErrorMessages::INCOMPATIBLE_INPUTS << endl;
         return nullptr;
     }
     return new Module(instanceId, *moduleDef, inputWires, outputWire);

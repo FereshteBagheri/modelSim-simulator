@@ -18,7 +18,7 @@ bool CommandValidator::validateAddComponent(Scope& scope, const string& componen
     bool isBasicGate = scope.isBasicGate(componentType);
 
     if ( isBasicGate && ((componentType == "not" && size != 2) || (componentType != "not" && size < 3))) {
-        cerr << ErrorMessages::INPUTS_INCOMPATIBLE << endl;
+        cerr << ErrorMessages::INCOMPATIBLE_INPUTS << endl;
         return false;
     }
     bool isModule = Scope::getModuleDefinition(componentType) != nullptr;
@@ -56,7 +56,7 @@ bool CommandValidator::validateConnect(Scope& scope, const string& inputWireId, 
 
 bool CommandValidator::validatePut(Scope& scope, const string& wireId, int value) {
     if (!scope.getWire(wireId)) {
-        cerr << ErrorMessages::ID_NOT_FOUND << endl;
+        cerr << ErrorMessages::INVALID_ID << endl;
         return false;
     }
 

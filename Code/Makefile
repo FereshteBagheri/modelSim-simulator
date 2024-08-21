@@ -5,7 +5,7 @@ CXX = g++
 CXXFLAGS = -Wall -Iinclude
 
 # Executables
-TARGET = modelsim.out
+TARGET = ModelSim.out
 
 
 # Directories

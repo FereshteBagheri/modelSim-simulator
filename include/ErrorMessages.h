@@ -13,7 +13,6 @@ namespace ErrorMessages {
     const string INVALID_CONNECTION = "invalid connection";
     const string ID_NOT_FOUND = "ID not found";
     const string VALUE_NOT_VALID = "Value not valid";
-    const string ID_NOT_FOUND = "ID not found";
     const string SELF_CONNECTION = "Self connection is not allowed";
     const string INVALID_COMMAND = "Invalid command: ";
     const string MODULE_EMPTY = "Module definition is empty or missing 'end_module'";
